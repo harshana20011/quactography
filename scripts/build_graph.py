@@ -10,6 +10,7 @@ from quactography.graph.reconst import build_adjacency_matrix, build_weighted_gr
 from quactography.graph.filter import (
     remove_orphan_nodes,
     remove_intermediate_connections,
+    choose_region_m_edges,
 )
 from quactography.image.utils import slice_along_axis
 from quactography.graph.io import save_graph
@@ -38,6 +39,9 @@ def _build_arg_parser():
         choices=["sagittal", "coronal", "axial"],
         help="Axis along which a slice is taken.",
     )
+
+    p.add_argument("--number_edges_m", type=int, help="Input number of edge wanted")
+
     return p
 
 
@@ -69,6 +73,7 @@ def main():
     weighted_graph, node_indices = build_weighted_graph(
         adj_matrix, node_indices, sh, args.axis_name
     )
+
     ## Test Harshana pour voir ce qu'il se passe pour un triangle :
     # adj_mat = np.array([[0.0, 1.0, 1.0], [1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
 
@@ -91,8 +96,13 @@ def main():
 
     # remove nodes without edges
     weighted_graph, node_indices = remove_orphan_nodes(
-        weighted_graph, node_indices, keep_node_indices
+        weighted_graph, node_indices, keep_node_indices  # type: ignore
     )
+    # keep only m edges of filtered graph
+    if args.number_edges_m:
+        weighted_graph = choose_region_m_edges(
+            weighted_graph, args.number_edges_m, node_indices, keep_node_indices  # type: ignore
+        )
 
     # save output
     save_graph(weighted_graph, node_indices, nodes_mask.shape, args.out_graph)
