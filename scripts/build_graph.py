@@ -72,7 +72,7 @@ def main():
     ## Test Harshana pour voir ce qu'il se passe pour un triangle :
     # adj_mat = np.array([[0.0, 1.0, 1.0], [1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
 
-    ## normalise to 0.5:
+    # # normalise to 0.5:
     # random_num_max_05 = np.random.default_rng().random() / 2
     # adj_mat *= random_num_max_05
     # adj_mat[0, 2] = 0.398374
