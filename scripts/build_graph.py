@@ -10,7 +10,7 @@ from quactography.graph.reconst import build_adjacency_matrix, build_weighted_gr
 from quactography.graph.filter import (
     remove_orphan_nodes,
     remove_intermediate_connections,
-    choose_region_m_edges,
+    choose_region_m_edges,  # type: ignore
 )
 from quactography.image.utils import slice_along_axis
 from quactography.graph.io import save_graph
