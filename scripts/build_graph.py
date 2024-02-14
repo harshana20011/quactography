@@ -10,7 +10,8 @@ from quactography.graph.reconst import build_adjacency_matrix, build_weighted_gr
 from quactography.graph.filter import (
     remove_orphan_nodes,
     remove_intermediate_connections,
-    choose_region_m_edges,  # type: ignore
+    choose_region_m_nodes,
+    choose_region_nodes,
 )
 from quactography.image.utils import slice_along_axis
 from quactography.graph.io import save_graph
@@ -40,7 +41,9 @@ def _build_arg_parser():
         help="Axis along which a slice is taken.",
     )
 
-    p.add_argument("--number_edges_m", type=int, help="Input number of edge wanted")
+    p.add_argument("--number_nodes_m", type=int, help="Input number of nodes wanted")
+    p.add_argument("--start_node", type=int, help="start node")
+    p.add_argument("--end_node", type=int, help="end node")
 
     return p
 
@@ -99,9 +102,18 @@ def main():
         weighted_graph, node_indices, keep_node_indices  # type: ignore
     )
     # keep only m edges of filtered graph
-    if args.number_edges_m:
-        weighted_graph = choose_region_m_edges(
-            weighted_graph, args.number_edges_m, node_indices, keep_node_indices  # type: ignore
+    if args.number_nodes_m:
+        weighted_graph = choose_region_m_nodes(
+            weighted_graph, args.number_nodes_m, node_indices, keep_node_indices  # type: ignore
+        )
+    if args.start_node and args.end_node:
+        # choose a specific range of nodes
+        weighted_graph = choose_region_nodes(
+            weighted_graph,
+            args.start_node,
+            args.end_node,
+            node_indices,
+            keep_node_indices,
         )
 
     # save output
