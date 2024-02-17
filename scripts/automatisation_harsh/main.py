@@ -21,7 +21,7 @@ from generate_random_matrices import save_adjacency_matrix_to_csv
 
 # Code pour une matrice générée aléatoirement:
 num_nodes = 8
-random_adj_matrix = generate_random_adjacency_matrix(num_nodes)
+random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=40)
 mat_adj = np.array(random_adj_matrix)
 save_adjacency_matrix_to_csv(random_adj_matrix, filename="random_adjacency_matrix.csv")
 

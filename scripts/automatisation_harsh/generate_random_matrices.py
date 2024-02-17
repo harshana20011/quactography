@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def generate_random_adjacency_matrix(num_nodes, max_weight=0.5):
+def generate_random_adjacency_matrix(num_nodes, num_zeros_to_add, max_weight=0.5):
     """
     Génère une matrice d'adjacence symétrique avec des poids aléatoires.
 
@@ -25,7 +25,7 @@ def generate_random_adjacency_matrix(num_nodes, max_weight=0.5):
             adjacency_matrix[i, j] = weight
             adjacency_matrix[j, i] = weight  # La matrice est symétrique
             # Mettez à zéro au moins la moitié des connexions supplémentaires
-    num_zeros_to_add = 30
+
     for _ in range(num_zeros_to_add):
         i, j = np.random.randint(0, num_nodes, size=2)
         adjacency_matrix[i, j] = 0
