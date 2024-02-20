@@ -1,4 +1,5 @@
 from visualisation_entry_graph import visualize_num_nodes
+import logging
 import numpy as np
 
 
@@ -64,4 +65,5 @@ def connexions_edges(mat_adj, num_nodes):
                 weight_qubit = mat_adj[depart, destination]
     weights.append(weight_qubit)
     weights[0][0]
-    return [number_of_edges, weights]
+    all_weights_sum = sum(np.tril(mat_adj).flatten())
+    return number_of_edges, weights, depart, destination, q_indices, all_weights_sum
