@@ -67,6 +67,18 @@ def hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges):
 
 
 def hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges):
+    """_summary_
+
+    Args:
+        noeud_de_fin (int):fin décicé par l'utilisateur : noeud de fin
+        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour éviter les doublements)
+        q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
+        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour éviter les doublements)
+        number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
+
+    Returns:
+       Sparse pauli op (str): Chaîne de Pauli représentant le coût associé à la contrainte d'avoir une seule connexion de fin
+    """
     qubit_end = []
     for node, value in enumerate(destination):
         if value == noeud_de_fin:
