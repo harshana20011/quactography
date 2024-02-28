@@ -3,9 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 
-# Code pour matrice d'adjacence déjà existante :
-df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
-mat_adj = np.array(df)
+# # Code pour matrice d'adjacence déjà existante :
+# df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
+# mat_adj = np.array(df)
+
+# Lire la matrice :
+df = pd.read_csv(r"random_adjacency_matrix.csv")
 
 G = nx.Graph()
 

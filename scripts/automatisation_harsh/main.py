@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from qiskit.visualization import plot_circuit_layout
 import multiprocessing
 import networkx as nx
+
 from visualisation_entry_graph import visualize_num_nodes
 from connexions_qubits import connexions_edges
 from generate_random_matrices import generate_random_adjacency_matrix
@@ -125,5 +126,5 @@ for alpha in alphas:
 alpha_min_costs = np.array(alpha_min_costs, dtype="str")
 
 # Save to file :
-with open("alpha_min_cost.txt", "a") as file:
-    np.savetxt(file, alpha_min_costs, delimiter=",", fmt="%s")
+
+np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
