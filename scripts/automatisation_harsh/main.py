@@ -1,14 +1,13 @@
-from qiskit.visualization import plot_distribution
 from qiskit.primitives import Estimator, Sampler
 from qiskit.circuit.library import QAOAAnsatz
 from scipy.optimize import minimize
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from qiskit.visualization import plot_circuit_layout
-import itertools
 import multiprocessing
 import networkx as nx
+import pandas as pd
+import numpy as np
+import itertools
+
 
 from visualisation_entry_graph import visualize_num_nodes
 from connexions_qubits import connexions_edges
@@ -24,6 +23,7 @@ def _find_shortest_path_parallel(args):
     hfin1 = args[2]
     hint1 = args[3]
     alpha = args[4]
+
     # Fonction coût en représentation QUBO:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
@@ -90,8 +90,8 @@ def main():
     # mat_adj = np.array(df)
 
     # Code pour une matrice générée aléatoirement :
-    num_nodes = 8
-    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=20)
+    num_nodes = 7
+    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=0)
     mat_adj = np.array(random_adj_matrix)
     save_adjacency_matrix_to_csv(
         random_adj_matrix, filename="random_adjacency_matrix.csv"
@@ -160,13 +160,72 @@ def main():
         print()
 
         alpha_min_costs.append(results[i][2])
+        visualize(depart, destination, mat_adj, alpha_min_costs[i][2])
 
-    # # Assuming alpha_min_costs is your list of arrays
-    # alpha_min_costs = np.array(alpha_min_costs, dtype="str")
+    # Assuming alpha_min_costs is your list of arrays
+    alpha_min_costs = np.array(alpha_min_costs, dtype="str")
 
-    # # Save to file :
+    # Save to file :
 
-    # np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+    np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+
+
+def visualize(depart, destination, mat_adj, bin_str):
+    G = nx.Graph()
+    for _, value in enumerate(depart):
+        G.add_edge(
+            depart[value],
+            destination[value],
+            weight=(mat_adj[depart[value], destination[value]]),
+        )
+
+    pos = nx.spring_layout(G)
+    edge_labels = nx.get_edge_attributes(G, "weight")
+    nx.draw_networkx_nodes(G, pos, node_size=400, node_color="#797EF6")
+    nx.draw_networkx_edges(G, pos, width=2, edge_color="#797EF6")
+    nx.draw_networkx_labels(
+        G, pos, font_size=10, font_family="sans-serif", font_color="w"
+    )
+    nx.draw_networkx_edge_labels(G, pos, edge_labels)
+
+    ax = plt.gca()
+    ax.margins(0.08)
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
+
+    # Display graph
+    # bin_str = list(map(int, max(dist.binary_probabilities(), key=dist.binary_probabilities().get)))  # type: ignore
+    # bin_str.reverse()
+    # print(bin_str)
+
+    pos = nx.spring_layout(G, seed=7)
+    edge_labels = nx.get_edge_attributes(G, "weight")
+
+    e_in = [(u, v) for i, (u, v, d) in enumerate(G.edges(data=True)) if bin_str[i]]
+    e_out = [(u, v) for i, (u, v, d) in enumerate(G.edges(data=True)) if not bin_str[i]]
+
+    print(e_in)
+
+    color_map = np.array(["#D3D3D3"] * G.number_of_nodes())
+    print(list(sum(e_in, ())))
+    color_map[list(sum(e_in, ()))] = "#EE6B6E"
+
+    nx.draw_networkx_nodes(G, pos, node_color=color_map, node_size=400)  # type: ignore
+    nx.draw_networkx_edges(
+        G, pos, edgelist=e_in, width=2, alpha=1, edge_color="#EE6B6E", style="dashed"
+    )
+    nx.draw_networkx_edges(G, pos, edgelist=e_out, width=2, edge_color="#D3D3D3")
+    nx.draw_networkx_edge_labels(G, pos, edge_labels)
+    nx.draw_networkx_labels(
+        G, pos, font_size=10, font_family="sans-serif", font_color="w"
+    )
+
+    ax = plt.gca()
+    ax.margins(0.08)
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
 
 
 if __name__ == "__main__":
