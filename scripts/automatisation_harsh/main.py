@@ -4,7 +4,10 @@ from qiskit.circuit.library import QAOAAnsatz
 from scipy.optimize import minimize
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
+from qiskit.visualization import plot_circuit_layout
+import multiprocessing
+import networkx as nx
 from visualisation_entry_graph import visualize_num_nodes
 from connexions_qubits import connexions_edges
 from generate_random_matrices import generate_random_adjacency_matrix
@@ -12,17 +15,17 @@ from generate_random_matrices import save_adjacency_matrix_to_csv
 from hamiltonian import hc, hdep, hfin, hint
 
 # Code pour matrice d'adjacence déjà existante :
-# df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
-# mat_adj = np.array(df)
+df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
+mat_adj = np.array(df)
 
-# Code pour une matrice générée aléatoirement :
-num_nodes = 8
-random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=20)
-mat_adj = np.array(random_adj_matrix)
-save_adjacency_matrix_to_csv(random_adj_matrix, filename="random_adjacency_matrix.csv")
+# # Code pour une matrice générée aléatoirement :
+# num_nodes = 8
+# random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=20)
+# mat_adj = np.array(random_adj_matrix)
+# save_adjacency_matrix_to_csv(random_adj_matrix, filename="random_adjacency_matrix.csv")
 
-# Lire la matrice :
-df = pd.read_csv(r"random_adjacency_matrix.csv")
+# # Lire la matrice :
+# df = pd.read_csv(r"random_adjacency_matrix.csv")
 
 # Visualisation et détermination du nombre de noeuds dans le graphe :
 num_nodes = visualize_num_nodes(df, mat_adj)
@@ -51,45 +54,75 @@ hint = hint(
 )
 
 # Alpha : coût associé aux contraintes:
-alpha = 0.8
-# Fonction coût en représentation QUBO:
-h = -hc + alpha * ((hdep**2) + (hfin**2) + hint)
+alphas = [
+    0.5 * all_weights_sum,
+    all_weights_sum,
+    2 * all_weights_sum,
+    3 * all_weights_sum,
+    4 * all_weights_sum,
+]
 
+alpha_min_costs = []
 
-# Create QAOA circuit.
-ansatz = QAOAAnsatz(h, reps=1)
-ansatz.decompose(reps=3).draw()
+for alpha in alphas:
+    # Fonction coût en représentation QUBO:
+    h = -hc + alpha * ((hdep**2) + (hfin**2) + hint)
 
-# Run on local estimator and sampler. Fix seeds for results reproducibility.
-estimator = Estimator(options={"shots": 1000000, "seed": 42})
-sampler = Sampler(options={"shots": 1000000, "seed": 42})
+    # Create QAOA circuit.
+    ansatz = QAOAAnsatz(h, reps=1)
+    print(ansatz.decompose(reps=1).draw())
 
+    # Run on local estimator and sampler. Fix seeds for results reproducibility.
+    estimator = Estimator(options={"shots": 1000000, "seed": 42})
+    sampler = Sampler(options={"shots": 1000000, "seed": 42})
 
-# Cost function for the minimizer.
-# Returns the expectation value of circuit with Hamiltonian as an observable.
-def cost_func(params, estimator, ansatz, hamiltonian):
-    cost = (
-        estimator.run(ansatz, hamiltonian, parameter_values=params).result().values[0]
-    )
-    return cost
+    # Cost function for the minimizer.
+    # Returns the expectation value of circuit with Hamiltonian as an observable.
+    def cost_func(params, estimator, ansatz, hamiltonian):
+        cost = (
+            estimator.run(ansatz, hamiltonian, parameter_values=params)
+            .result()
+            .values[0]
+        )
+        return cost
 
+    # Generate starting point. Fixed to zeros for results reproducibility.
+    # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
+    x0 = np.zeros(ansatz.num_parameters)
 
-# Generate starting point. Fixed to zeros for results reproducibility.
-# x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
-x0 = np.zeros(ansatz.num_parameters)
+    res = minimize(cost_func, x0, args=(estimator, ansatz, h), method="COBYLA")
+    print(res)
 
-res = minimize(cost_func, x0, args=(estimator, ansatz, h), method="COBYLA")
-print(res)
+    min_cost = cost_func(res.x, estimator, ansatz, h)
 
-# cost_func([ 8.250e-01  ,2.622e-01  ,5.591e-02 ,-2.605e-01],estimator, ansatz, h)
+    print(f"Minimum cost: {min_cost}")
 
-# Get probability distribution associated with optimized parameters.
-circ = ansatz.copy()
-circ.measure_all()
-dist = sampler.run(circ, res.x).result().quasi_dists[0]
+    # Get probability distribution associated with optimized parameters.
+    circ = ansatz.copy()
+    circ.measure_all()
+    dist = sampler.run(circ, res.x).result().quasi_dists[0]
 
+    # plot_distribution(dist.binary_probabilities(), figsize=(7, 5))
 
-plot_distribution(dist.binary_probabilities(), figsize=(8, 8))
+    # print(max(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
+    bin_str = list(map(int, max(dist.binary_probabilities(), key=dist.binary_probabilities().get)))  # type: ignore
+    bin_str.reverse()
+    bin_str = np.array(bin_str)
 
-print(max(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
-print(sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
+    # Concaténer chaque liste en une seule chaîne de caractères
+    str_path = ["".join(map(str, bin_str))]  # type: ignore
+    str_path = str_path[0]  # type: ignore
+
+    # Save parameters alpha and min_cost with path in csv file:
+    alpha_min_cost = [alpha, min_cost, str_path]
+    alpha_min_costs.append(alpha_min_cost)
+
+    # print(sorted(dist.binary_probabilities(), key=dist.bina
+    # ry_probabilities().get))  # type: ignore
+
+# Assuming alpha_min_costs is your list of arrays
+alpha_min_costs = np.array(alpha_min_costs, dtype="str")
+
+# Save to file :
+with open("alpha_min_cost.txt", "a") as file:
+    np.savetxt(file, alpha_min_costs, delimiter=",", fmt="%s")
