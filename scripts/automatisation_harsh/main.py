@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from qiskit.visualization import plot_circuit_layout
+import itertools
 import multiprocessing
 import networkx as nx
 
@@ -15,63 +16,16 @@ from generate_random_matrices import generate_random_adjacency_matrix
 from generate_random_matrices import save_adjacency_matrix_to_csv
 from hamiltonian import hc, hdep, hfin, hint
 
-# # Code pour matrice d'adjacence déjà existante :
-# df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
-# mat_adj = np.array(df)
-
-# Code pour une matrice générée aléatoirement :
-num_nodes = 8
-random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=20)
-mat_adj = np.array(random_adj_matrix)
-save_adjacency_matrix_to_csv(random_adj_matrix, filename="random_adjacency_matrix.csv")
-
-# Lire la matrice :
-df = pd.read_csv(r"random_adjacency_matrix.csv")
-
-# Visualisation et détermination du nombre de noeuds dans le graphe :
-num_nodes = visualize_num_nodes(df, mat_adj)
-
-# Déterminer les différentes caractéristiques du graphe :
-number_of_edges, weights, depart, destination, q_indices, all_weights_sum = (
-    connexions_edges(mat_adj, num_nodes)
-)
-
-# Le coût obligatoire (premier terme de Hamiltonien) :
-hc = hc(number_of_edges, weights, all_weights_sum)
-
-# Le terme associé au respect de la contrainte de départ :
-# Déterminer le noeud de départ :
-noeud_de_depart = 0
-hdep = hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges)
-
-
-# Le terme associé au respect de la contrainte de fin :
-# Déterminer le noeud de fin :
-noeud_de_fin = 5
-hfin = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
-
-hint = hint(
-    noeud_de_depart, noeud_de_fin, depart, q_indices, destination, number_of_edges
-)
-
-# Alpha : coût associé aux contraintes:
-alphas = [
-    0.5 * all_weights_sum,
-    all_weights_sum,
-    2 * all_weights_sum,
-    3 * all_weights_sum,
-    4 * all_weights_sum,
-]
-
-alpha_min_costs = []
-
-# Nombre de processeurs :
-nbr_processes = multiprocessing.cpu_count()
 
 # Fonction à faire en parallèle :
-def _find_shortest_path_parallel(alpha):
+def _find_shortest_path_parallel(args):
+    hc1 = args[0]
+    hdep1 = args[1]
+    hfin1 = args[2]
+    hint1 = args[3]
+    alpha = args[4]
     # Fonction coût en représentation QUBO:
-    h = -hc + alpha * ((hdep**2) + (hfin**2) + hint)
+    h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps=1)
@@ -121,29 +75,99 @@ def _find_shortest_path_parallel(alpha):
 
     # Save parameters alpha and min_cost with path in csv file:
     alpha_min_cost = [alpha, min_cost, str_path]
-    alpha_min_costs.append(alpha_min_cost)
 
     # print(sorted(dist.binary_probabilities(), key=dist.bina
     # ry_probabilities().get))  # type: ignore
     print("Finished with alpha : ", alpha)
 
-    return(res, min_cost)
+    return (res, min_cost, alpha_min_cost)
 
-pool = multiprocessing.Pool(nbr_processes)
-results = pool.map(_find_shortest_path_parallel,
-                   (alphas))
-pool.close()
-pool.join()
 
-for i, alpha in enumerate(alphas):
-    print("Alpha : ", alpha, " ({})".format(i))
-    print(results[i][0])
-    print(f"Minimum cost: {results[i][1]}")
-    print()
+def main():
 
-# Assuming alpha_min_costs is your list of arrays
-alpha_min_costs = np.array(alpha_min_costs, dtype="str")
+    # # Code pour matrice d'adjacence déjà existante :
+    # df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
+    # mat_adj = np.array(df)
 
-# Save to file :
+    # Code pour une matrice générée aléatoirement :
+    num_nodes = 8
+    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=20)
+    mat_adj = np.array(random_adj_matrix)
+    save_adjacency_matrix_to_csv(
+        random_adj_matrix, filename="random_adjacency_matrix.csv"
+    )
 
-np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+    # Lire la matrice :
+    df = pd.read_csv(r"random_adjacency_matrix.csv")
+
+    # Visualisation et détermination du nombre de noeuds dans le graphe :
+    num_nodes = visualize_num_nodes(df, mat_adj)
+
+    # Déterminer les différentes caractéristiques du graphe :
+    number_of_edges, weights, depart, destination, q_indices, all_weights_sum = (
+        connexions_edges(mat_adj, num_nodes)
+    )
+
+    # Le coût obligatoire (premier terme de Hamiltonien) :
+    hc1 = hc(number_of_edges, weights, all_weights_sum)
+
+    # Le terme associé au respect de la contrainte de départ :
+    # Déterminer le noeud de départ :
+    noeud_de_depart = 0
+    hdep1 = hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges)
+
+    # Le terme associé au respect de la contrainte de fin :
+    # Déterminer le noeud de fin :
+    noeud_de_fin = 5
+    hfin1 = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
+
+    hint1 = hint(
+        noeud_de_depart, noeud_de_fin, depart, q_indices, destination, number_of_edges
+    )
+
+    # Alpha : coût associé aux contraintes:
+    alphas = [
+        0.5 * all_weights_sum,
+        all_weights_sum,
+        2 * all_weights_sum,
+        3 * all_weights_sum,
+        4 * all_weights_sum,
+    ]
+
+    alpha_min_costs = []
+
+    # Nombre de processeurs :
+    nbr_processes = multiprocessing.cpu_count()
+
+    pool = multiprocessing.Pool(nbr_processes)
+    results = pool.map(
+        _find_shortest_path_parallel,
+        zip(
+            itertools.repeat(hc1),
+            itertools.repeat(hdep1),
+            itertools.repeat(hfin1),
+            itertools.repeat(hint1),
+            alphas,
+        ),
+    )
+    pool.close()
+    pool.join()
+
+    for i, alpha in enumerate(alphas):
+        print("Alpha : ", alpha, " ({})".format(i))
+        print(results[i][0])
+        print(f"Minimum cost: {results[i][1]}")
+        print()
+
+        alpha_min_costs.append(results[i][2])
+
+    # # Assuming alpha_min_costs is your list of arrays
+    # alpha_min_costs = np.array(alpha_min_costs, dtype="str")
+
+    # # Save to file :
+
+    # np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+
+
+if __name__ == "__main__":
+    main()
