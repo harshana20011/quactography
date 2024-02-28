@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from qiskit.visualization import plot_circuit_layout
 import multiprocessing
 import networkx as nx
+
 from visualisation_entry_graph import visualize_num_nodes
 from connexions_qubits import connexions_edges
 from generate_random_matrices import generate_random_adjacency_matrix
@@ -64,7 +65,11 @@ alphas = [
 
 alpha_min_costs = []
 
-for alpha in alphas:
+# Nombre de processeurs :
+nbr_processes = multiprocessing.cpu_count()
+
+# Fonction à faire en parallèle :
+def _find_shortest_path_parallel(alpha):
     # Fonction coût en représentation QUBO:
     h = -hc + alpha * ((hdep**2) + (hfin**2) + hint)
 
@@ -92,11 +97,11 @@ for alpha in alphas:
     x0 = np.zeros(ansatz.num_parameters)
 
     res = minimize(cost_func, x0, args=(estimator, ansatz, h), method="COBYLA")
-    print(res)
+    # print(res)
 
     min_cost = cost_func(res.x, estimator, ansatz, h)
 
-    print(f"Minimum cost: {min_cost}")
+    # print(f"Minimum cost: {min_cost}")
 
     # Get probability distribution associated with optimized parameters.
     circ = ansatz.copy()
@@ -120,6 +125,21 @@ for alpha in alphas:
 
     # print(sorted(dist.binary_probabilities(), key=dist.bina
     # ry_probabilities().get))  # type: ignore
+    print("Finished with alpha : ", alpha)
+
+    return(res, min_cost)
+
+pool = multiprocessing.Pool(nbr_processes)
+results = pool.map(_find_shortest_path_parallel,
+                   (alphas))
+pool.close()
+pool.join()
+
+for i, alpha in enumerate(alphas):
+    print("Alpha : ", alpha, " ({})".format(i))
+    print(results[i][0])
+    print(f"Minimum cost: {results[i][1]}")
+    print()
 
 # Assuming alpha_min_costs is your list of arrays
 alpha_min_costs = np.array(alpha_min_costs, dtype="str")
