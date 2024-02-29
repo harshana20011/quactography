@@ -4,6 +4,14 @@ import numpy as np
 
 
 def visualize(depart, destination, mat_adj, bin_str):
+    """_summary_ : Visualiser le graphe et le chemin optimal trouvé.
+
+    Args:
+        depart (list int): liste de points départs
+        destination (list int): liste de points finaux
+        mat_adj (np array):  matrice d'adjacence
+        list(map(int, bin_str)) (liste int): Chaîne d'entiers binaires représentant le chemin
+    """
 
     G = nx.Graph()
     for i, _ in enumerate(depart):

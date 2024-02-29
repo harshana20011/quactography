@@ -6,6 +6,14 @@ import numpy as np
 
 # Fonction à faire en parallèle :
 def _find_shortest_path_parallel(args):
+    """Summary : Utilisation de multiprocessing pour trouver le chemin optimal en parallèle pour les différentes valeurs de alphas.
+
+    Args:
+        args (Sparse Pauli list): Différents termes dans l'hamiltonien.
+
+    Returns:
+        liste : résultats de l'optimisation, valeur minimale trouvée pour le coût, alpha et le chemin optimal.
+    """
     hc1 = args[0]
     hdep1 = args[1]
     hfin1 = args[2]
