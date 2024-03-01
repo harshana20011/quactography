@@ -17,18 +17,21 @@ def main():
 
     # # Code pour matrice d'adjacence déjà existante :
     # df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
-    # mat_adj = np.array(df)
+    # mat_adj = np.array(df)  # type ignore
 
     # Code pour une matrice générée aléatoirement :
     num_nodes = 5
-    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=8)
+    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=2)
     mat_adj = np.array(random_adj_matrix)
     save_adjacency_matrix_to_csv(
-        random_adj_matrix, filename="random_adjacency_matrix.csv"
+        random_adj_matrix,
+        filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv",
     )
 
     # Lire la matrice :
-    df = pd.read_csv(r"random_adjacency_matrix.csv")
+    df = pd.read_csv(
+        r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
+    )
 
     # Visualisation et détermination du nombre de noeuds dans le graphe :
     num_nodes = visualize_num_nodes(df, mat_adj)
@@ -57,6 +60,7 @@ def main():
 
     # Alpha : coût associé aux contraintes:
     alphas = [
+        0.0,
         0.5 * all_weights_sum,
         all_weights_sum,
         2 * all_weights_sum,
@@ -89,15 +93,27 @@ def main():
         print(f"Minimum cost: {results[i][1]}")
         print()
 
+        reps = 3  # utilisateur peut changer la valeur de reps
+
         alpha_min_costs.append(results[i][2])
-        visualize(depart, destination, mat_adj, list(map(int, (alpha_min_costs[i][2]))))
+        visualize(
+            depart,
+            destination,
+            mat_adj,
+            list(map(int, (alpha_min_costs[i][2]))),
+            alpha,
+            results[i][1],
+            noeud_de_depart,
+            noeud_de_fin,
+            reps,
+        )
         print(str(alpha_min_costs[i][2]))
     # Assuming alpha_min_costs is your list of arrays
     alpha_min_costs = np.array(alpha_min_costs, dtype="str")
 
     # Save to file :
 
-    np.savetxt("alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+    np.savetxt(r"output\alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
     plot_alpha_cost()
 
 

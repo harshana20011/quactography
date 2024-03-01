@@ -25,5 +25,7 @@ def visualize_num_nodes(df, mat_adj):
     graph_cross.add_edges_from(edges)
 
     draw(graph_cross, with_labels=True, edge_labels=str)  # type: ignore
-    plt.show()
+    # Save figure in output
+    plt.savefig("output/graph_dep.png")
+    plt.close()
     return num_nodes_cross_graph

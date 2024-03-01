@@ -23,6 +23,13 @@ def _find_shortest_path_parallel(args):
     # Fonction coût en représentation QUBO:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
+    mat = h.to_matrix()
+    u, s, v = np.linalg.svd(mat)
+
+    print("u", u)
+    print("s", s)
+    print("v", v)
+
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps=1)
 
