@@ -78,7 +78,7 @@ def visualize(
     # plt.tight_layout()
     plt.legend(
         [
-            f"Chemin optimal pour alpha = {alpha:.2f},\nMinimum cost: {min_cost}\n Noeud de départ : {noeud_de_depart}, \n Noeud de fin : {noeud_de_fin},\n reps : {reps}"
+            f"alpha = {alpha:.2f},\n Coût: {min_cost:.2f}\n Noeud de départ : {noeud_de_depart}, \n Noeud de fin : {noeud_de_fin},\n reps : {reps}"
         ],
         loc="upper right",
     )

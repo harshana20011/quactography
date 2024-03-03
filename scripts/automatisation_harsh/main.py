@@ -21,7 +21,7 @@ def main():
 
     # Code pour une matrice générée aléatoirement :
     num_nodes = 5
-    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=2)
+    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=1)
     mat_adj = np.array(random_adj_matrix)
     save_adjacency_matrix_to_csv(
         random_adj_matrix,
@@ -32,6 +32,7 @@ def main():
     df = pd.read_csv(
         r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
     )
+    # mat_adj = np.array(df)
 
     # Visualisation et détermination du nombre de noeuds dans le graphe :
     num_nodes = visualize_num_nodes(df, mat_adj)
@@ -51,7 +52,7 @@ def main():
 
     # Le terme associé au respect de la contrainte de fin :
     # Déterminer le noeud de fin :
-    noeud_de_fin = 2
+    noeud_de_fin = 3
     hfin1 = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
 
     hint1 = hint(
@@ -72,7 +73,7 @@ def main():
 
     # Nombre de processeurs :
     nbr_processes = multiprocessing.cpu_count()
-
+    reps = 3  # utilisateur peut changer la valeur de reps
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,
@@ -82,6 +83,7 @@ def main():
             itertools.repeat(hfin1),
             itertools.repeat(hint1),
             alphas,
+            itertools.repeat(reps),
         ),
     )
     pool.close()
@@ -92,8 +94,6 @@ def main():
         print(results[i][0])
         print(f"Minimum cost: {results[i][1]}")
         print()
-
-        reps = 3  # utilisateur peut changer la valeur de reps
 
         alpha_min_costs.append(results[i][2])
         visualize(
