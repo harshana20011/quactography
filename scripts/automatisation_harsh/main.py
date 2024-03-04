@@ -15,23 +15,23 @@ from qaoa_path import _find_shortest_path_parallel
 
 def main():
 
-    # # Code pour matrice d'adjacence déjà existante :
-    # df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj.csv")
-    # mat_adj = np.array(df)  # type ignore
+    # Code pour matrice d'adjacence déjà existante :
+    df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj2.csv")
+    mat_adj = np.array(df)  # type ignore
 
-    # Code pour une matrice générée aléatoirement :
-    num_nodes = 5
-    random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=1)
-    mat_adj = np.array(random_adj_matrix)
-    save_adjacency_matrix_to_csv(
-        random_adj_matrix,
-        filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv",
-    )
+    # # Code pour une matrice générée aléatoirement :
+    # num_nodes = 8
+    # random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=29)
+    # mat_adj = np.array(random_adj_matrix)
+    # save_adjacency_matrix_to_csv(
+    #     random_adj_matrix,
+    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv",
+    # )
 
-    # Lire la matrice :
-    df = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
-    )
+    # # Lire la matrice :
+    # df = pd.read_csv(
+    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
+    # )
     # mat_adj = np.array(df)
 
     # Visualisation et détermination du nombre de noeuds dans le graphe :
@@ -47,12 +47,12 @@ def main():
 
     # Le terme associé au respect de la contrainte de départ :
     # Déterminer le noeud de départ :
-    noeud_de_depart = 0
+    noeud_de_depart = 4
     hdep1 = hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges)
 
     # Le terme associé au respect de la contrainte de fin :
     # Déterminer le noeud de fin :
-    noeud_de_fin = 3
+    noeud_de_fin = 1
     hfin1 = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
 
     hint1 = hint(
@@ -62,6 +62,7 @@ def main():
     # Alpha : coût associé aux contraintes:
     alphas = [
         0.0,
+        1.0,
         0.5 * all_weights_sum,
         all_weights_sum,
         2 * all_weights_sum,
@@ -73,7 +74,7 @@ def main():
 
     # Nombre de processeurs :
     nbr_processes = multiprocessing.cpu_count()
-    reps = 3  # utilisateur peut changer la valeur de reps
+    reps = 4  # utilisateur peut changer la valeur de reps
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,
