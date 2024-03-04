@@ -10,6 +10,7 @@ from generate_random_matrices import save_adjacency_matrix_to_csv
 from hamiltonian import hc, hdep, hfin, hint
 from alphas_min_graph import plot_alpha_cost
 from visualize_paths_opt import visualize
+from visualize_paths_opt import visualizerust
 from qaoa_path import _find_shortest_path_parallel
 
 
@@ -62,8 +63,8 @@ def main():
     # Alpha : coût associé aux contraintes:
     alphas = [
         0.0,
-        1.0,
         0.5 * all_weights_sum,
+        1.0,
         all_weights_sum,
         2 * all_weights_sum,
         3 * all_weights_sum,
@@ -74,7 +75,7 @@ def main():
 
     # Nombre de processeurs :
     nbr_processes = multiprocessing.cpu_count()
-    reps = 4  # utilisateur peut changer la valeur de reps
+    reps = 7  # utilisateur peut changer la valeur de reps
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,
@@ -97,7 +98,7 @@ def main():
         print()
 
         alpha_min_costs.append(results[i][2])
-        visualize(
+        visualizerust(
             depart,
             destination,
             mat_adj,
@@ -107,6 +108,7 @@ def main():
             noeud_de_depart,
             noeud_de_fin,
             reps,
+            num_nodes,
         )
         print(str(alpha_min_costs[i][2]))
     # Assuming alpha_min_costs is your list of arrays
