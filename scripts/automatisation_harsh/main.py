@@ -10,7 +10,6 @@ from generate_random_matrices import save_adjacency_matrix_to_csv
 from hamiltonian import hc, hdep, hfin, hint
 from alphas_min_graph import plot_alpha_cost
 from visualize_paths_opt import visualize
-from visualize_paths_opt import visualizerust
 from qaoa_path import _find_shortest_path_parallel
 
 
@@ -21,8 +20,8 @@ def main():
     mat_adj = np.array(df)  # type ignore
 
     # # Code pour une matrice générée aléatoirement :
-    # num_nodes = 8
-    # random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=29)
+    # num_nodes = 4
+    # random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=3)
     # mat_adj = np.array(random_adj_matrix)
     # save_adjacency_matrix_to_csv(
     #     random_adj_matrix,
@@ -48,12 +47,12 @@ def main():
 
     # Le terme associé au respect de la contrainte de départ :
     # Déterminer le noeud de départ :
-    noeud_de_depart = 4
+    noeud_de_depart = 2
     hdep1 = hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges)
 
     # Le terme associé au respect de la contrainte de fin :
     # Déterminer le noeud de fin :
-    noeud_de_fin = 1
+    noeud_de_fin = 0
     hfin1 = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
 
     hint1 = hint(
@@ -64,18 +63,16 @@ def main():
     alphas = [
         0.0,
         0.5 * all_weights_sum,
-        1.0,
         all_weights_sum,
-        2 * all_weights_sum,
-        3 * all_weights_sum,
-        4 * all_weights_sum,
+        1.2 * all_weights_sum,
+        1.5 * all_weights_sum,
     ]
 
     alpha_min_costs = []
 
     # Nombre de processeurs :
     nbr_processes = multiprocessing.cpu_count()
-    reps = 7  # utilisateur peut changer la valeur de reps
+    reps = 5  # utilisateur peut changer la valeur de reps
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,
@@ -98,7 +95,7 @@ def main():
         print()
 
         alpha_min_costs.append(results[i][2])
-        visualizerust(
+        visualize(
             depart,
             destination,
             mat_adj,
@@ -108,14 +105,14 @@ def main():
             noeud_de_depart,
             noeud_de_fin,
             reps,
-            num_nodes,
+            all_weights_sum,
         )
         print(str(alpha_min_costs[i][2]))
+
     # Assuming alpha_min_costs is your list of arrays
     alpha_min_costs = np.array(alpha_min_costs, dtype="str")
 
     # Save to file :
-
     np.savetxt(r"output\alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
     plot_alpha_cost()
 

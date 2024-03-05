@@ -163,7 +163,6 @@ def hint(
 
     hints = []
     for i in range(len(hint)):
-        hints.append([])
-        hints[i] = hint[i] ** 2
-    print(f"Somme sur les termes intermédiaires au carré: {sum(hints[i])}")
-    return sum(hints[i])
+        hints.append(hint[i] ** 2)
+    print(f"Somme des termes intermédiaires au carré: {sum(hints)}")
+    return sum(hints)
