@@ -1,6 +1,4 @@
-from connexions_qubits import connexions_edges
 from qiskit.quantum_info import SparsePauliOp
-import numpy as np
 
 
 def hc(number_of_edges, weights, all_weights_sum):
@@ -15,14 +13,13 @@ def hc(number_of_edges, weights, all_weights_sum):
         Sparse pauli op (str): Chaîne de Pauli représentant le coût obligatoire pour passer par un chemin
     """
 
-    pauli_weight_first_term = []
+    pauli_weight_first_term = [("I" * number_of_edges, all_weights_sum / 2)]
     # Terme "IIIIII...I":
-    pauli_weight_first_term.append(("I" * number_of_edges, all_weights_sum / 2))
 
     # Z à la bonne position:
     for i in range(number_of_edges):
-        str = ("I" * (number_of_edges - i - 1) + "Z" + "I" * i, -weights[0][i] / 2)
-        pauli_weight_first_term.append(str)
+        str1 = ("I" * (number_of_edges - i - 1) + "Z" + "I" * i, -weights[0][i] / 2)
+        pauli_weight_first_term.append(str1)
 
     h_c = SparsePauliOp.from_list(pauli_weight_first_term)
     print(f"\n Coût obligatoire = {h_c}")
@@ -34,13 +31,16 @@ def hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges):
 
     Args:
         noeud_de_depart (int): entrée décicé par l'utilisateur : noeud de départ
-        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour éviter les doublements)
+        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour
+         éviter les doublements)
         q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour éviter les doublements)
+        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour
+        éviter les doublements)
         number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
 
     Returns:
-        Sparse pauli op (str): Chaîne de Pauli représentant le coût associé à la contrainte d'avoir une seule connexion de départ
+        Sparse pauli op (str): Chaîne de Pauli représentant le coût associé à la contrainte
+        d'avoir une seule connexion de départ
     """
 
     qubit_depart = []
@@ -52,9 +52,7 @@ def hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges):
             qubit_depart.append(q_indices[node])
     print(f"\n Qubit à sommer sur les x_i de départ: q({qubit_depart}) - I ")
 
-    pauli_departure_term = []
-    # Terme "IIIIII...I":
-    pauli_departure_term.append(("I" * number_of_edges, len(qubit_depart) * 0.5 - 1))
+    pauli_departure_term = [("I" * number_of_edges, len(qubit_depart) * 0.5 - 1)]
 
     # Z à la bonne position:
     for i, value in enumerate(qubit_depart):
@@ -71,13 +69,18 @@ def hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges):
 
     Args:
         noeud_de_fin (int):fin décicé par l'utilisateur : noeud de fin
-        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour éviter les doublements)
-        q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour éviter les doublements)
+        depart (list int): Liste de noeuds en départ (en fonction de la matrice
+        d'adjacence pour éviter les doublements)
+        q_indices (list int): Indice associé à chaque qubit en
+        fonction de la matrice d'adjacence
+        destination (list int):  Liste de noeuds en fin (en fonction de la
+
+        matrice d'adjacence pour éviter les doublements)
         number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
 
     Returns:
-       Sparse pauli op (str): Chaîne de Pauli représentant le coût associé à la contrainte d'avoir une seule connexion de fin
+       Sparse pauli op (str): Chaîne de Pauli représentant le coût associé
+       à la contrainte d'avoir une seule connexion de fin
     """
     qubit_end = []
     for node, value in enumerate(destination):
@@ -88,9 +91,7 @@ def hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges):
             qubit_end.append(q_indices[node])
     print(f"\n Qubit à sommer sur les x_i de fin: q({qubit_end}) - I ")
 
-    pauli_end_term = []
-    # Terme "IIIIII...I":
-    pauli_end_term.append(("I" * number_of_edges, len(qubit_end) * 0.5 - 1))
+    pauli_end_term = [("I" * number_of_edges, len(qubit_end) * 0.5 - 1)]
 
     # Z à la bonne position:
     for i, value in enumerate(qubit_end):
@@ -112,7 +113,8 @@ def hint(
         noeud_de_fin (int):fin décicé par l'utilisateur : noeud de fin
         depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour éviter les doublements)
         q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour éviter les doublements)
+        destination (list int):  Liste de noeuds en fin (en fonction de la
+        matrice d'adjacence pour éviter les doublements)
         number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
 
     Returns:
@@ -146,9 +148,9 @@ def hint(
 
     hint = []
     prod_terms = []
-    for list in liste_qubits_int:
+    for list_q in liste_qubits_int:
         prod_term = "I" * number_of_edges
-        for qubit in list:
+        for qubit in list_q:
             prod_term = prod_term[:qubit] + "Z" + prod_term[qubit + 1 :]
         prod_terms.append(prod_term[::-1])
 

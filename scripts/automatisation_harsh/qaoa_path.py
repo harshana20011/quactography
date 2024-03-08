@@ -3,6 +3,8 @@ from qiskit.circuit.library import QAOAAnsatz
 from scipy.optimize import minimize
 import numpy as np
 
+from get_exact_solution import get_exact_sol
+
 
 # Fonction à faire en parallèle :
 def _find_shortest_path_parallel(args):
@@ -24,15 +26,17 @@ def _find_shortest_path_parallel(args):
     # Fonction coût en représentation QUBO:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
-    mat = h.to_matrix()
+    # Valeurs, vecteurs propres minimisant H:
+    get_exact_sol(h)
+    # mat = h.to_matrix()
 
     # Save results in npz file:
-    eig_value, v = np.linalg.eig(mat)
+    # eig_value, v = np.linalg.eig(mat)
 
     # Save in csv file:
-    np.savetxt("eig_value.csv", eig_value, delimiter=",")
-    np.savetxt("v.csv", v, delimiter=",")
-    np.savetxt("mat.csv", mat, delimiter=",")
+    # np.savetxt("eig_value.npz", eig_value, delimiter=",")
+    # np.savetxt("v.npz", v, delimiter=",")
+    # np.savetxt("mat.npz", mat, delimiter=",")
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps)
@@ -87,4 +91,4 @@ def _find_shortest_path_parallel(args):
     # ry_probabilities().get))  # type: ignore
     print("Finished with alpha : ", alpha)
 
-    return (res, min_cost, alpha_min_cost)
+    return res, min_cost, alpha_min_cost

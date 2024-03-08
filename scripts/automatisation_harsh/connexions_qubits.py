@@ -1,11 +1,11 @@
-from visualisation_entry_graph import visualize_num_nodes
-import logging
 import numpy as np
 
 
 def connexions_edges(mat_adj, num_nodes):
-    """Retourne une liste de connexions possibles entre chaque noeud voisin, en considérant le dédoublement des connexions, ainsi qu'en
-    omettant les dédoublements dans une seconde liste. Retourne également une liste d'indices pour chaque connexion possible qui seront le nom des qubits.
+    """Retourne une liste de connexions possibles entre chaque noeud voisin, en considérant
+    le dédoublement des connexions, ainsi qu'en
+    omettant les dédoublements dans une seconde liste. Retourne également une liste d'indices pour chaque connexion
+    possible qui seront le nom des qubits.
 
     Args:
         mat_adj (nparray): matrice d'adjacence
@@ -49,7 +49,7 @@ def connexions_edges(mat_adj, num_nodes):
     index = 0
     num_nodes_minus_1 = num_nodes - 1
     for i in range(num_nodes_minus_1):
-        for j in list_of_nodes_for_naming_edges[i]:
+        for _ in list_of_nodes_for_naming_edges[i]:
             depart.append(i)
             q_indices.append(index)
             index += 1
@@ -59,9 +59,9 @@ def connexions_edges(mat_adj, num_nodes):
     print(f"Destin :{destination}")
 
     weights = []
-    for a in range(number_of_edges):
-        for i in depart:
-            for j in destination:
+    for _ in range(number_of_edges):
+        for _ in depart:
+            for _ in destination:
                 weight_qubit = mat_adj[depart, destination]
     weights.append(weight_qubit)
     weights[0][0]

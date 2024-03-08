@@ -7,6 +7,7 @@ def generate_random_adjacency_matrix(num_nodes, num_zeros_to_add, max_weight=0.5
     Génère une matrice d'adjacence symétrique avec des poids aléatoires.
 
     Args:
+        num_zeros_to_add: nombre de zéro à ajouter à la matrice d'adjacence afin d'avoir moins de edges et briser le graphe complet
         num_nodes (int): Nombre de nœuds dans le graphe.
         max_weight (float): Poids maximum autorisé pour les arêtes.
 
