@@ -22,7 +22,7 @@ def _find_shortest_path_parallel(args):
     hint1 = args[3]
     alpha = args[4]
     reps = args[5]
-
+    # todo: change name of variables
     # Fonction coût en représentation QUBO:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
@@ -60,8 +60,14 @@ def _find_shortest_path_parallel(args):
     # Generate starting point. Fixed to zeros for results reproducibility.
     # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
     x0 = np.zeros(ansatz.num_parameters)
-
-    res = minimize(cost_func, x0, args=(estimator, ansatz, h), method="COBYLA")
+    # todo: check maxiter parameter to avoid maximum number of function evaluations exceeded (default = 1000)
+    res = minimize(
+        cost_func,
+        x0,
+        args=(estimator, ansatz, h),
+        method="COBYLA",
+        options={"maxiter": 1000},
+    )
     # print(res)
 
     min_cost = cost_func(res.x, estimator, ansatz, h)

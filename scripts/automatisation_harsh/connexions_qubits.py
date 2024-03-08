@@ -1,6 +1,7 @@
 import numpy as np
 
 
+# todo: optimize loops
 def connexions_edges(mat_adj, num_nodes):
     """Retourne une liste de connexions possibles entre chaque noeud voisin, en considérant
     le dédoublement des connexions, ainsi qu'en

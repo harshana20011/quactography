@@ -1,6 +1,6 @@
 from qiskit.quantum_info import SparsePauliOp
 
-
+# todo: change name of variables 
 def hc(number_of_edges, weights, all_weights_sum):
     """_summary_
 
@@ -14,7 +14,6 @@ def hc(number_of_edges, weights, all_weights_sum):
     """
 
     pauli_weight_first_term = [("I" * number_of_edges, all_weights_sum / 2)]
-    # Terme "IIIIII...I":
 
     # Z à la bonne position:
     for i in range(number_of_edges):

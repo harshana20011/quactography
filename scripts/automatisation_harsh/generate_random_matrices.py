@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+# todo: change the way of generating random adjacency matrix
+
 
 def generate_random_adjacency_matrix(num_nodes, num_zeros_to_add, max_weight=0.5):
     """

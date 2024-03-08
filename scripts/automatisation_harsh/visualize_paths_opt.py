@@ -6,6 +6,7 @@ import rustworkx as rx
 from rustworkx.visualization import mpl_draw
 
 
+# todo: change display of paths taken (not put to zero edge we don't take)
 def visualize(
     depart,
     destination,
