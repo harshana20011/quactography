@@ -1,16 +1,17 @@
 from qiskit.quantum_info import SparsePauliOp
 
-# todo: change name of variables 
+
+# todo: change name of variables
 def hc(number_of_edges, weights, all_weights_sum):
-    """_summary_
+    """Cost of going through a path
 
     Args:
-        number_of_edges (int): Nombre de qubits soit le nombre de edges dans le graphe
-        weights (list int): le poids associé à chaque qubit (edge) du graphe
-        all_weights_sum (int): Le poids total sommé de tous les edges
+        number_of_edges (int): Number of edges in the graph
+        weights (list int): The weights of the edges
+        all_weights_sum (int): Sum of all weights in the graph
 
     Returns:
-        Sparse pauli op (str): Chaîne de Pauli représentant le coût obligatoire pour passer par un chemin
+        Sparse pauli op (str):  Pauli string representing the cost of going through a path
     """
 
     pauli_weight_first_term = [("I" * number_of_edges, all_weights_sum / 2)]
@@ -26,20 +27,17 @@ def hc(number_of_edges, weights, all_weights_sum):
 
 
 def hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges):
-    """_summary_
+    """Cost term of having a single departure connection (one edge connected to the starting node)
 
     Args:
-        noeud_de_depart (int): entrée décicé par l'utilisateur : noeud de départ
-        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour
-         éviter les doublements)
-        q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la matrice d'adjacence pour
-        éviter les doublements)
-        number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
+        noeud_de_depart (int): Starting node decided by the user
+        depart (list int):  List of nodes in departure (according to the adjacency matrix to avoid doublets)
+        q_indices (list int): Index associated with each qubit according to the adjacency matrix
+        destination (list int):  List of nodes in end (according to the adjacency matrix to avoid doublets)
+        number_of_edges (int): Number of edges which is the same as the number of qubits in the graph
 
     Returns:
-        Sparse pauli op (str): Chaîne de Pauli représentant le coût associé à la contrainte
-        d'avoir une seule connexion de départ
+        Sparse pauli op (str): Pauli string representing the cost associated with the constraint of having a single departure connection
     """
 
     qubit_depart = []
@@ -64,22 +62,17 @@ def hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges):
 
 
 def hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges):
-    """_summary_
+    """Cost term of having a single end connection (one edge connected to the ending node)
 
     Args:
-        noeud_de_fin (int):fin décicé par l'utilisateur : noeud de fin
-        depart (list int): Liste de noeuds en départ (en fonction de la matrice
-        d'adjacence pour éviter les doublements)
-        q_indices (list int): Indice associé à chaque qubit en
-        fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la
-
-        matrice d'adjacence pour éviter les doublements)
-        number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
+        noeud_de_fin (int): Ending node decided by the user
+        depart (list int): List of nodes in departure (according to the adjacency matrix to avoid doublets)
+        q_indices (list int): Index associated with each qubit according to the adjacency matrix
+        destination (list int): List of nodes in end (according to the adjacency matrix to avoid doublets)
+        number_of_edges (int): Number of edges which is the same as the number of qubits in the graph
 
     Returns:
-       Sparse pauli op (str): Chaîne de Pauli représentant le coût associé
-       à la contrainte d'avoir une seule connexion de fin
+       Sparse pauli op (str): Pauli string representing the cost associated with the constraint of having a single end connection
     """
     qubit_end = []
     for node, value in enumerate(destination):
@@ -105,21 +98,20 @@ def hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges):
 def hint(
     noeud_de_depart, noeud_de_fin, depart, q_indices, destination, number_of_edges
 ):
-    """Générer tous les termes intermédiaires et les sommer
+    """Cost term of having an even number of intermediate connections (two edges connected to the intermediate nodes)
 
     Args:
-        noeud_de_depart (int): entrée décicé par l'utilisateur : noeud de départ
-        noeud_de_fin (int):fin décicé par l'utilisateur : noeud de fin
-        depart (list int): Liste de noeuds en départ (en fonction de la matrice d'adjacence pour éviter les doublements)
-        q_indices (list int): Indice associé à chaque qubit en fonction de la matrice d'adjacence
-        destination (list int):  Liste de noeuds en fin (en fonction de la
-        matrice d'adjacence pour éviter les doublements)
-        number_of_edges (int): nombre de edges qui est le même que le nombre de qubits dans le graphe
+        noeud_de_depart (int):  Starting node decided by the user
+        noeud_de_fin (int): Ending node decided by the user
+        depart (list int): List of nodes in departure (according to the adjacency matrix to avoid doublets)
+        q_indices (list int): Index associated with each qubit according to the adjacency matrix
+        destination (list int): List of nodes in end (according to the adjacency matrix to avoid doublets)
+        number_of_edges (int): Number of edges which is the same as the number of qubits in the graph
 
     Returns:
-        Somme sur les contraintes intermédiaires de chaque noeud au carré (somme finale)
+        Sparse pauli op (str): Pauli string representing the cost associated with the constraint of having an even number of intermediate connections
     """
-    # Contrainte intermédiaire:
+    # Intermediate connections, constraints:
     noeuds_int = []
     for node, value in enumerate(depart):
         if (value != noeud_de_depart) and (value != noeud_de_fin):

@@ -1,5 +1,4 @@
-"""Tracer la courbe du coût minimal trouvé en fonction de alpha. 
-Les données sont lues à partir du fichier alpha_min_cost.txt."""
+""" This script is used to plot the cost function in function of alpha."""
 
 import pandas as pd
 import numpy as np

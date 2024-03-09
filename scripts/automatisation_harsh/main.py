@@ -7,6 +7,7 @@ from numpy import load
 from visualisation_entry_graph import visualize_num_nodes
 from connexions_qubits import connexions_edges
 from generate_random_matrices import generate_random_adjacency_matrix
+from generate_random_matrices import generate_random_adjacency_matrix_from_zeros
 from generate_random_matrices import save_adjacency_matrix_to_csv
 from hamiltonian import hc, hdep, hfin, hint
 from alphas_min_graph import plot_alpha_cost
@@ -34,11 +35,14 @@ def main():
     # # and save it to a csv file in automatisation_harsh/matrices
     # # First choose the number of nodes you wish to have in the graph:
     # num_nodes = 4
-    # random_adj_matrix = generate_random_adjacency_matrix(num_nodes, num_zeros_to_add=3)
+    # probability_of_edge = 0.5
+    # random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
+    #     num_nodes, probability=probability_of_edge
+    # )
     # mat_adj = np.array(random_adj_matrix)
     # save_adjacency_matrix_to_csv(
     #     random_adj_matrix,
-    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv",
+    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
     # )
     # # Read matrix from csv file and convert to numpy array:
     # df = pd.read_csv(
@@ -89,10 +93,10 @@ def main():
     # that amplifies the cost of breaking constraints in the Hamiltonian:
     alphas = [
         0.0,
-        0.5 * all_weights_sum,
-        all_weights_sum,
-        1.2 * all_weights_sum,
-        1.5 * all_weights_sum,
+        0.50 * all_weights_sum,
+        1.00 * all_weights_sum,
+        1.20 * all_weights_sum,
+        1.50 * all_weights_sum,
     ]
 
     alpha_min_costs = []
@@ -101,7 +105,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 5
+    reps = 1
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,
@@ -145,6 +149,7 @@ def main():
 
     # Save a plot of the minimum cost for different values of alpha:
     plot_alpha_cost()
+    print("------------------------PROCESS FINISHED-------------------------------")
 
 
 if __name__ == "__main__":

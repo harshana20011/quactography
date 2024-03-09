@@ -8,13 +8,15 @@ from get_exact_solution import get_exact_sol
 
 # Fonction à faire en parallèle :
 def _find_shortest_path_parallel(args):
-    """Summary : Utilisation de multiprocessing pour trouver le chemin optimal en parallèle pour les différentes valeurs de alphas.
+    """Summary :  Usage of QAOA algorithm to find the shortest path in a graph.
 
     Args:
-        args (Sparse Pauli list): Différents termes dans l'hamiltonien.
+        args (Sparse Pauli list):  Hamiltonian in QUBO representation
 
     Returns:
-        liste : résultats de l'optimisation, valeur minimale trouvée pour le coût, alpha et le chemin optimal.
+        res (minimize):  Results of the minimization
+        min_cost (float):  Minimum cost
+        alpha_min_cost (list):  List of alpha, minimum cost and binary path
     """
     hc1 = args[0]
     hdep1 = args[1]
@@ -23,20 +25,11 @@ def _find_shortest_path_parallel(args):
     alpha = args[4]
     reps = args[5]
     # todo: change name of variables
-    # Fonction coût en représentation QUBO:
+    # Cost function for the minimizer:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
-    # Valeurs, vecteurs propres minimisant H:
+    # Eigendecomposition of the Hamiltonian matrix with optimal solution:
     get_exact_sol(h)
-    # mat = h.to_matrix()
-
-    # Save results in npz file:
-    # eig_value, v = np.linalg.eig(mat)
-
-    # Save in csv file:
-    # np.savetxt("eig_value.npz", eig_value, delimiter=",")
-    # np.savetxt("v.npz", v, delimiter=",")
-    # np.savetxt("mat.npz", mat, delimiter=",")
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps)
@@ -86,7 +79,7 @@ def _find_shortest_path_parallel(args):
     bin_str.reverse()
     bin_str = np.array(bin_str)
 
-    # Concaténer chaque liste en une seule chaîne de caractères
+    # Concatenate the binary path to a string:
     str_path = ["".join(map(str, bin_str))]  # type: ignore
     str_path = str_path[0]  # type: ignore
 

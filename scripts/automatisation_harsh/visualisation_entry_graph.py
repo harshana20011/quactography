@@ -4,7 +4,7 @@ from rustworkx.visualization import mpl_draw as draw
 
 
 def visualize_num_nodes(df, mat_adj):
-    """
+    """Visualize the graph and determine the number of nodes in the graph.
     Args:
         df (csv):  csv file containing the adjacency matrix
         mat_adj (nparray):  numpy array containing the adjacency matrix

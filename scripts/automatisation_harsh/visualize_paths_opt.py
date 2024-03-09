@@ -19,18 +19,18 @@ def visualize(
     reps,
     all_weights_sum,
 ):
-    """_summary_ : Visualiser le graphe et le chemin optimal trouvé.
+    """_summary_ :Visualize the path taken in the graph and save the figure in the output folder
 
     Args:
-        depart (list int): liste de points départs
-        destination (list int): liste de points finaux
-        mat_adj (np array):  matrice d'adjacence
-        list(map(int, bin_str)) (liste int): Chaîne d'entiers binaires représentant le chemin
+        depart (list int): list of starting points
+        destination (list int): list of destination points
+        mat_adj (np array):  adjacency matrix
+        list(map(int, bin_str)) (liste int): list of 0 and 1 representing the path taken
     """
     bin_str = list(map(int, bin_str))
     bin_str.reverse()
 
-    # Créer un graphe dirigé
+    # Create a graph
     G = nx.Graph()
 
     for i, value in enumerate(bin_str):
@@ -39,10 +39,10 @@ def visualize(
                 depart[i], destination[i], weight=mat_adj[depart[i], destination[i]]
             )
         else:
-            # Ajouter une arête avec un poids 0 et une couleur rose
+            # Add the edge with a weight of 0 if the edge is not taken
             G.add_edge(depart[i], destination[i], weight=0)
 
-    # Fonction pour dessiner le graphe avec des couleurs personnalisées
+    # Draw the graph with different colors for the edges taken and not taken
     def mpl_draw(graph, with_labels=True, edge_labels=None):
         pos = nx.shell_layout(graph)
         nx.draw(
@@ -63,7 +63,7 @@ def visualize(
             edge_labels = nx.get_edge_attributes(graph, edge_labels)
             nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
 
-    # Dessiner le graphe
+    # Draw the graph
     mpl_draw(G, with_labels=True, edge_labels="weight")
     # plt.show()
     plt.axis("off")

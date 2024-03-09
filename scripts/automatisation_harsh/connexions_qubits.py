@@ -3,19 +3,23 @@ import numpy as np
 
 # todo: optimize loops
 def connexions_edges(mat_adj, num_nodes):
-    """Retourne une liste de connexions possibles entre chaque noeud voisin, en considérant
-    le dédoublement des connexions, ainsi qu'en
-    omettant les dédoublements dans une seconde liste. Retourne également une liste d'indices pour chaque connexion
-    possible qui seront le nom des qubits.
+    """Determine different connexions between nodes and the number of edges in the graph
 
     Args:
-        mat_adj (nparray): matrice d'adjacence
-        num_nodes (int): nombre de noeuds dans le graphe
+        mat_adj (nparray): adjacency matrix
+        num_nodes (int): number of nodes in the graph
+    Returns:
+        number_of_edges (int): number of edges in the graph
+        weights (list): list of weights
+        depart (list): list of nodes of departure
+        destination (list): list of destination nodes
+        q_indices (list): list of indices corresponding to the edges same as the qubit indices
+        all_weights_sum (float): sum of all weights in the graph
     """
     mat_triang_sup = np.triu(mat_adj)
     mat_triang_sup = np.array(mat_triang_sup)
 
-    # Déterminer les connexions possibles entre chaque noeud voisin:
+    # Determine different connexions between nodes:
     all_possible_connexions = []
 
     for start in range(num_nodes):
@@ -28,7 +32,7 @@ def connexions_edges(mat_adj, num_nodes):
         print(f"Connexions possibles depuis {start} au(x) noeud(s) : {possible_starts}")
     print(f"Toutes connexions possibles (doublées) : {all_possible_connexions} \n")
 
-    # Déterminer le nom des edges:
+    # Determine edges indices and weights:
     list_of_nodes_for_naming_edges = []
     destination = []
     number_of_edges = 0
