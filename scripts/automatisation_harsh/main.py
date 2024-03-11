@@ -28,8 +28,10 @@ def main():
     - plots the minimum cost for different values of alpha
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
-    df = pd.read_csv(r"scripts\automatisation_harsh\matrices\mat_adj2.csv")
-    mat_adj = np.array(df)
+    adj_matrix_from_csv = pd.read_csv(
+        r"scripts\automatisation_harsh\matrices\mat_adj2.csv"
+    )
+    mat_adj = np.array(adj_matrix_from_csv)
 
     # # Second method: generate a random adjacency matrix
     # # and save it to a csv file in automatisation_harsh/matrices
@@ -45,10 +47,10 @@ def main():
     #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
     # )
     # # Read matrix from csv file and convert to numpy array:
-    # df = pd.read_csv(
+    # adj_matrix_from_csv = pd.read_csv(
     #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
     # )
-    # mat_adj = np.array(df)
+    # mat_adj = np.array(adj_matrix_from_csv)
 
     # # Third method: visualize a graph from a npz file
     # # Open and read data from npz file: (fibercup data output from build_graph.py)
@@ -60,33 +62,51 @@ def main():
     # print(vol_dims, "\n", matrix_from_npz[vol_dims])
 
     # Visualisation and determination of the number of nodes in the graph:
-    num_nodes = visualize_num_nodes(df, mat_adj)
+    num_nodes = visualize_num_nodes(adj_matrix_from_csv, mat_adj)
 
     # Determination of different connexions between nodes and the number of edges in the graph:
-    number_of_edges, weights, depart, destination, q_indices, all_weights_sum = (
-        connexions_edges(mat_adj, num_nodes)
-    )
+    (
+        number_of_edges,
+        weights,
+        starting_nodes,
+        ending_nodes,
+        q_indices,
+        all_weights_sum,
+    ) = connexions_edges(mat_adj, num_nodes)
 
     # Calculation the cost of the first term in the Hamiltonian
-    # which makes sure there is only one edge connected to the starting node:
-    hc1 = hc(number_of_edges, weights, all_weights_sum)
+    # which is the mandatory cost for taking a given path:
+    mandatory_cost_hamiltonian = hc(number_of_edges, weights, all_weights_sum)
 
     # Fix a starting node:
-    noeud_de_depart = 2
-    # Calculates the cost of the first term in the Hamiltonian
+    starting_node = 2
+    # Calculates the cost of the second term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the starting node:
-    hdep1 = hdep(noeud_de_depart, depart, q_indices, destination, number_of_edges)
+    starting_node_constraint_hamiltonian = hdep(
+        starting_node,
+        starting_nodes,
+        q_indices,
+        ending_nodes,
+        number_of_edges,
+    )
 
     # Fix an ending node:
-    noeud_de_fin = 0
-    # Calculates the cost of the last term in the Hamiltonian
+    ending_node = 0
+    # Calculates the cost of the third term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the ending node:
-    hfin1 = hfin(noeud_de_fin, depart, q_indices, destination, number_of_edges)
+    ending_node_constraint_hamiltonian = hfin(
+        ending_node, starting_nodes, q_indices, ending_nodes, number_of_edges
+    )
 
-    # Calculates the cost of the intermediate nodes in the Hamiltonian
+    # Calculates the cost of the intermediate nodes in the Hamiltonian (last term)
     # which when equal zero, makes sure there are only two edges connected to the intermediate nodes:
-    hint1 = hint(
-        noeud_de_depart, noeud_de_fin, depart, q_indices, destination, number_of_edges
+    intermediate_nodes_constraint_hamiltonian = hint(
+        starting_node,
+        ending_node,
+        starting_nodes,
+        q_indices,
+        ending_nodes,
+        number_of_edges,
     )
 
     # Different values of alpha where alpha is a coefficient
@@ -110,10 +130,10 @@ def main():
     results = pool.map(
         _find_shortest_path_parallel,
         zip(
-            itertools.repeat(hc1),
-            itertools.repeat(hdep1),
-            itertools.repeat(hfin1),
-            itertools.repeat(hint1),
+            itertools.repeat(mandatory_cost_hamiltonian),
+            itertools.repeat(starting_node_constraint_hamiltonian),
+            itertools.repeat(ending_node_constraint_hamiltonian),
+            itertools.repeat(intermediate_nodes_constraint_hamiltonian),
             alphas,
             itertools.repeat(reps),
         ),
@@ -130,14 +150,14 @@ def main():
 
         alpha_min_costs.append(results[i][2])
         visualize(
-            depart,
-            destination,
+            starting_nodes,
+            ending_nodes,
             mat_adj,
             list(map(int, (alpha_min_costs[i][2]))),
             alpha,
             results[i][1],
-            noeud_de_depart,
-            noeud_de_fin,
+            starting_node,
+            ending_node,
             reps,
             all_weights_sum,
         )

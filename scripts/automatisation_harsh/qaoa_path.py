@@ -6,7 +6,7 @@ import numpy as np
 from get_exact_solution import get_exact_sol
 
 
-# Fonction à faire en parallèle :
+# Function to find the shortest path in a graph using QAOA algorithm with parallel processing:
 def _find_shortest_path_parallel(args):
     """Summary :  Usage of QAOA algorithm to find the shortest path in a graph.
 
@@ -24,7 +24,7 @@ def _find_shortest_path_parallel(args):
     hint1 = args[3]
     alpha = args[4]
     reps = args[5]
-    # todo: change name of variables
+    # todo: check the order of binary string (reverse or not)
     # Cost function for the minimizer:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
