@@ -8,22 +8,22 @@ from rustworkx.visualization import mpl_draw
 
 # todo: change display of paths taken (not put to zero edge we don't take)
 def visualize(
-    depart,
-    destination,
+    starting_nodes,
+    ending_nodes,
     mat_adj,
     bin_str,
     alpha,
     min_cost,
-    noeud_de_depart,
-    noeud_de_fin,
+    starting_node,
+    ending_node,
     reps,
     all_weights_sum,
 ):
     """_summary_ :Visualize the path taken in the graph and save the figure in the output folder
 
     Args:
-        depart (list int): list of starting points
-        destination (list int): list of destination points
+        starting_nodes (list int): list of starting points
+        ending_nodes (list int): list of ending_nodes points
         mat_adj (np array):  adjacency matrix
         list(map(int, bin_str)) (liste int): list of 0 and 1 representing the path taken
     """
@@ -36,11 +36,13 @@ def visualize(
     for i, value in enumerate(bin_str):
         if value == 1:
             G.add_edge(
-                depart[i], destination[i], weight=mat_adj[depart[i], destination[i]]
+                starting_nodes[i],
+                ending_nodes[i],
+                weight=mat_adj[starting_nodes[i], ending_nodes[i]],
             )
         else:
             # Add the edge with a weight of 0 if the edge is not taken
-            G.add_edge(depart[i], destination[i], weight=0)
+            G.add_edge(starting_nodes[i], ending_nodes[i], weight=0)
 
     # Draw the graph with different colors for the edges taken and not taken
     def mpl_draw(graph, with_labels=True, edge_labels=None):
@@ -70,10 +72,10 @@ def visualize(
     # plt.tight_layout()
     plt.legend(
         [
-            f"alpha = {(alpha/all_weights_sum):.2f},\n Coût: {min_cost:.2f}\n Noeud de départ : {noeud_de_depart}, \n Noeud de fin : {noeud_de_fin},\n reps : {reps}"
+            f"alpha = {(alpha/all_weights_sum):.2f},\n Cost: {min_cost:.2f}\n Starting node : {starting_node}, \n Ending node : {ending_node,},\n reps : {reps}"
         ],
         loc="upper right",
     )
     # plt.show()
-    plt.savefig(f"output/chemin_opt_alpha_{alpha:.2f}.png")  # Save the figure
+    plt.savefig(f"output/Opt_path_alpha_{alpha:.2f}.png")  # Save the figure
     plt.close()

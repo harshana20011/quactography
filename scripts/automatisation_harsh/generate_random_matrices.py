@@ -77,8 +77,8 @@ def save_adjacency_matrix_to_csv(adjacency_matrix, filename="adjacency_matrix.cs
         adjacency_matrix (np.ndarray): adjacency matrix to save
         filename (str): name of the file to save the adjacency matrix to
     """
-    df = pd.DataFrame(adjacency_matrix)
-    df.to_csv(filename, index=False)
+    adj_matrix_csv = pd.DataFrame(adjacency_matrix)
+    adj_matrix_csv.to_csv(filename, index=False)
 
 
 def save_adjacency_matrix_to_npz(adjacency_matrix, filename="adjacency_matrix.npz"):

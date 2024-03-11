@@ -9,7 +9,12 @@ from connexions_qubits import connexions_edges
 from generate_random_matrices import generate_random_adjacency_matrix
 from generate_random_matrices import generate_random_adjacency_matrix_from_zeros
 from generate_random_matrices import save_adjacency_matrix_to_csv
-from hamiltonian import hc, hdep, hfin, hint
+from hamiltonian import (
+    mandatory_cost,
+    starting_node_cost,
+    ending_node_cost,
+    intermediate_cost_h_term,
+)
 from alphas_min_graph import plot_alpha_cost
 from visualize_paths_opt import visualize
 from qaoa_path import _find_shortest_path_parallel
@@ -76,13 +81,15 @@ def main():
 
     # Calculation the cost of the first term in the Hamiltonian
     # which is the mandatory cost for taking a given path:
-    mandatory_cost_hamiltonian = hc(number_of_edges, weights, all_weights_sum)
+    mandatory_cost_hamiltonian = mandatory_cost(
+        number_of_edges, weights, all_weights_sum
+    )
 
     # Fix a starting node:
     starting_node = 2
     # Calculates the cost of the second term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the starting node:
-    starting_node_constraint_hamiltonian = hdep(
+    starting_node_constraint_hamiltonian = starting_node_cost(
         starting_node,
         starting_nodes,
         q_indices,
@@ -94,13 +101,13 @@ def main():
     ending_node = 0
     # Calculates the cost of the third term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the ending node:
-    ending_node_constraint_hamiltonian = hfin(
+    ending_node_constraint_hamiltonian = ending_node_cost(
         ending_node, starting_nodes, q_indices, ending_nodes, number_of_edges
     )
 
     # Calculates the cost of the intermediate nodes in the Hamiltonian (last term)
     # which when equal zero, makes sure there are only two edges connected to the intermediate nodes:
-    intermediate_nodes_constraint_hamiltonian = hint(
+    intermediate_nodes_constraint_hamiltonian = intermediate_cost_h_term(
         starting_node,
         ending_node,
         starting_nodes,
