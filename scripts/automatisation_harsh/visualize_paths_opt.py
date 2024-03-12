@@ -59,7 +59,12 @@ def visualize(
 
     # Draw the graph
     edge_label = nx.get_edge_attributes(G, "weight")
-    nx.draw_networkx_edge_labels(G, pos=nx.planar_layout(G), edge_labels=edge_label)
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=nx.planar_layout(G),
+        edge_labels=edge_label,
+        bbox=dict(facecolor="white", edgecolor="none", alpha=0.65),
+    )
     nx.draw_planar(
         G,
         with_labels=True,

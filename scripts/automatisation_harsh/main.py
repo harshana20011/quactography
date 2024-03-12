@@ -32,29 +32,29 @@ def main():
     - saves the minimum cost for different values of alpha to a file
     - plots the minimum cost for different values of alpha
     """
-    # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
-    adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj_test.csv"
-    )
-    mat_adj = np.array(adj_matrix_from_csv)
-
-    # # Second method: generate a random adjacency matrix
-    # # and save it to a csv file in automatisation_harsh/matrices
-    # # First choose the number of nodes you wish to have in the graph:
-    # num_nodes = 4
-    # probability_of_edge = 0.8
-    # random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
-    #     num_nodes, probability=probability_of_edge
-    # )
-    # mat_adj = np.array(random_adj_matrix)
-    # save_adjacency_matrix_to_csv(
-    #     random_adj_matrix,
-    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
-    # )
-    # # Read matrix from csv file and convert to numpy array:
+    # # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     # adj_matrix_from_csv = pd.read_csv(
-    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
+    #     r"scripts\automatisation_harsh\matrices\mat_adj_test.csv"
     # )
+    # mat_adj = np.array(adj_matrix_from_csv)
+
+    # Second method: generate a random adjacency matrix
+    # and save it to a csv file in automatisation_harsh/matrices
+    # First choose the number of nodes you wish to have in the graph:
+    num_nodes = 4
+    probability_of_edge = 0.6
+    random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
+        num_nodes, probability=probability_of_edge
+    )
+    mat_adj = np.array(random_adj_matrix)
+    save_adjacency_matrix_to_csv(
+        random_adj_matrix,
+        filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
+    )
+    # Read matrix from csv file and convert to numpy array:
+    adj_matrix_from_csv = pd.read_csv(
+        r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
+    )
     # When using existing csv file for random matrix, convert to numpy array:
     # mat_adj = np.array(adj_matrix_from_csv)
 
@@ -133,7 +133,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 5
+    reps = 20
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,

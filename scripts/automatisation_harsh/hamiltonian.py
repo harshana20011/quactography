@@ -58,7 +58,7 @@ def starting_node_cost(
         pauli_starting_node_term.append(str2)
     start_node_constraint_cost_h = SparsePauliOp.from_list(pauli_starting_node_term)
 
-    print(f"\n Contrainte de départ = {start_node_constraint_cost_h}")
+    print(f"\n Start constraint = {start_node_constraint_cost_h}")
     return start_node_constraint_cost_h
 
 
@@ -84,7 +84,7 @@ def ending_node_cost(
     for node, value in enumerate(starting_nodes):
         if value == end_node:
             qubit_end.append(q_indices[node])
-    print(f"\n Qubit à sommer sur les x_i de fin: q({qubit_end}) - I ")
+    print(f"\nQubit to sum over ending x_i: q({qubit_end}) - I ")
 
     pauli_end_term = [("I" * number_of_edges, len(qubit_end) * 0.5 - 1)]
 
@@ -94,7 +94,7 @@ def ending_node_cost(
         pauli_end_term.append(str2)
     end_node_constraint_cost_h = SparsePauliOp.from_list(pauli_end_term)
 
-    print(f"\n Contrainte de fin = {end_node_constraint_cost_h}")
+    print(f"\n End constraint = {end_node_constraint_cost_h}")
     return end_node_constraint_cost_h
 
 
