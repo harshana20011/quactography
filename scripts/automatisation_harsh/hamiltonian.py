@@ -1,7 +1,6 @@
 from qiskit.quantum_info import SparsePauliOp
 
 
-# todo: change name of variables
 def mandatory_cost(number_of_edges, weights, all_weights_sum):
     """Cost of going through a path
 

@@ -6,7 +6,6 @@ import rustworkx as rx
 from rustworkx.visualization import mpl_draw
 
 
-# todo: change display of paths taken (not put to zero edge we don't take)
 def visualize(
     starting_nodes,
     ending_nodes,
@@ -29,7 +28,7 @@ def visualize(
     """
     bin_str = list(map(int, bin_str))
 
-    # Create a graph
+    # Create a graph where the edges taken are in green and the edges not taken are in black
     G = nx.Graph()
     edges_taken = []
     edges_not_taken = []
@@ -41,7 +40,7 @@ def visualize(
                 ending_nodes[i],
                 {
                     "weight": mat_adj[starting_nodes[i], ending_nodes[i]],
-                    "color": "black",
+                    "color": "green",
                 },
             )
             edges_taken.append(edge_taken)
@@ -51,7 +50,7 @@ def visualize(
                 ending_nodes[i],
                 {
                     "weight": mat_adj[starting_nodes[i], ending_nodes[i]],
-                    "color": "green",
+                    "color": "black",
                 },
             )
             edges_not_taken.append(edge_not_taken)
@@ -77,7 +76,7 @@ def visualize(
     # plt.tight_layout()
     plt.legend(
         [
-            f"alpha = {(alpha/all_weights_sum):.2f},\n Cost: {min_cost:.2f}\n Starting node : {starting_node}, \n Ending node : {ending_node,},\n reps : {reps}"
+            f"alpha = {(alpha/all_weights_sum):.2f},\n Cost: {min_cost:.2f}\n Starting node : {starting_node}, \n Ending node : {ending_node},\n reps : {reps}"
         ],
         loc="upper right",
     )

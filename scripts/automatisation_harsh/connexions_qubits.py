@@ -1,7 +1,6 @@
 import numpy as np
 
 
-# todo: optimize loops
 def connexions_edges(mat_adj, num_nodes):
     """Determine different connexions between nodes and the number of edges in the graph
 
