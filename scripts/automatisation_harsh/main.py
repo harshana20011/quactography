@@ -34,7 +34,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj2.csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj_test.csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
@@ -42,7 +42,7 @@ def main():
     # # and save it to a csv file in automatisation_harsh/matrices
     # # First choose the number of nodes you wish to have in the graph:
     # num_nodes = 4
-    # probability_of_edge = 0.5
+    # probability_of_edge = 0.8
     # random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
     #     num_nodes, probability=probability_of_edge
     # )
@@ -53,8 +53,9 @@ def main():
     # )
     # # Read matrix from csv file and convert to numpy array:
     # adj_matrix_from_csv = pd.read_csv(
-    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
+    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
     # )
+    # When using existing csv file for random matrix, convert to numpy array:
     # mat_adj = np.array(adj_matrix_from_csv)
 
     # # Third method: visualize a graph from a npz file
@@ -86,7 +87,7 @@ def main():
     )
 
     # Fix a starting node:
-    starting_node = 2
+    starting_node = 1
     # Calculates the cost of the second term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the starting node:
     starting_node_constraint_hamiltonian = starting_node_cost(
@@ -132,7 +133,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 1
+    reps = 5
     pool = multiprocessing.Pool(nbr_processes)
     results = pool.map(
         _find_shortest_path_parallel,

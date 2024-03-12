@@ -28,7 +28,7 @@ def visualize(
         list(map(int, bin_str)) (liste int): list of 0 and 1 representing the path taken
     """
     bin_str = list(map(int, bin_str))
-    bin_str.reverse()
+    # bin_str.reverse()
 
     # Create a graph
     G = nx.Graph()

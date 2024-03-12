@@ -59,7 +59,7 @@ def _find_shortest_path_parallel(args):
         x0,
         args=(estimator, ansatz, h),
         method="COBYLA",
-        options={"maxiter": 1000},
+        options={"maxiter": 5000},
     )
     # print(res)
 
