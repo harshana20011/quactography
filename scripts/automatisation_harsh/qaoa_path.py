@@ -24,6 +24,7 @@ def _find_shortest_path_parallel(args):
     hint1 = args[3]
     alpha = args[4]
     reps = args[5]
+    weights = args[6]
     # Cost function for the minimizer:
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
@@ -59,6 +60,7 @@ def _find_shortest_path_parallel(args):
         args=(estimator, ansatz, h),
         method="COBYLA",
         options={"maxiter": 5000},
+        tol=0.1 * min(weights),
     )
     # print(res)
 

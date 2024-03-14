@@ -41,7 +41,7 @@ def main():
     # Second method: generate a random adjacency matrix
     # and save it to a csv file in automatisation_harsh/matrices
     # First choose the number of nodes you wish to have in the graph:
-    num_nodes = 4
+    num_nodes = 6
     probability_of_edge = 0.6
     random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
         num_nodes, probability=probability_of_edge
@@ -144,6 +144,7 @@ def main():
             itertools.repeat(intermediate_nodes_constraint_hamiltonian),
             alphas,
             itertools.repeat(reps),
+            itertools.repeat(weights),
         ),
     )
     pool.close()
