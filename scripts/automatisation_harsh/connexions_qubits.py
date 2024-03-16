@@ -70,7 +70,7 @@ def connexions_edges(mat_adj, num_nodes):
             for _ in ending_nodes:
                 weight_qubit = mat_adj[starting_nodes, ending_nodes]
     weights.append(weight_qubit)
-    weights[0][0]
+    # weights[0][0]
     all_weights_sum = sum(np.tril(mat_adj).flatten())
     return (
         number_of_edges,
