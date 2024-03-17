@@ -59,10 +59,11 @@ def _find_shortest_path_parallel(args):
         x0,
         args=(estimator, ansatz, h),
         method="COBYLA",
-        options={"maxiter": 5000},
-        tol=1e-4,
+        options={"maxiter": 5000, "disp": True},
+        tol=0.1 * min_weights,
         # tol=1e-3,
     )
+
     # print(res)
 
     min_cost = cost_func(res.x, estimator, ansatz, h)
