@@ -6,7 +6,7 @@ def get_exact_sol(hamiltonian):
     eigenvalues, eigenvectors = np.linalg.eig(mat_hamiltonian)
 
     best_indices = np.where(eigenvalues == np.min(eigenvalues))
-    print(eigenvalues[int("0111", 2)])
+    # print(eigenvalues[int("0111", 2)])
     print("Eigenvalues : ", eigenvalues[best_indices])
     print("Eigenvectors : ", eigenvectors[best_indices])
 

@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 
 def plot_alpha_cost():
     df = pd.read_csv(
-        r"output\alpha_min_cost.txt", header=None, names=["alpha", "cost", "path"]
+        r"output\alpha_min_cost_not_reversed_yet.txt",
+        header=None,
+        names=["alpha", "cost", "path"],
     )
 
     alpha = df["alpha"]

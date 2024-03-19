@@ -120,11 +120,26 @@ def main():
     # Different values of alpha where alpha is a coefficient
     # that amplifies the cost of breaking constraints in the Hamiltonian:
     alphas = [
-        0.0,
-        0.50 * all_weights_sum,
-        1.00 * all_weights_sum,
-        1.20 * all_weights_sum,
-        1.50 * all_weights_sum,
+        # 0.0,
+        # 0.50 * all_weights_sum,
+        # 1.00 * all_weights_sum,
+        3.0 * all_weights_sum,
+        3.1 * all_weights_sum,
+        3.2 * all_weights_sum,
+        3.3 * all_weights_sum,
+        3.4 * all_weights_sum,
+        3.5 * all_weights_sum,
+        # 3.6 * all_weights_sum,
+        # 3.7 * all_weights_sum,
+        # 4.0 * all_weights_sum,
+        # 3.85 * all_weights_sum,
+        # 4.0 * all_weights_sum,
+        # 4.1 * all_weights_sum,
+        # 4.5 * all_weights_sum,
+        # 5.0 * all_weights_sum,
+        # 4.2 * all_weights_sum,
+        # 20 * all_weights_sum,
+        # 1.50 * all_weights_sum,
     ]
 
     alpha_min_costs = []
@@ -133,7 +148,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 25
+    reps = 30
     pool = multiprocessing.Pool(nbr_processes)
 
     results = pool.map(
@@ -175,7 +190,12 @@ def main():
 
     # Save the minimum cost for different values of alpha to a file with the corresponding binary path in txt file:
     alpha_min_costs = np.array(alpha_min_costs, dtype="str")
-    np.savetxt(r"output\alpha_min_cost.txt", alpha_min_costs, delimiter=",", fmt="%s")
+    np.savetxt(
+        r"output\alpha_min_cost_not_reversed_yet.txt",
+        alpha_min_costs,
+        delimiter=",",
+        fmt="%s",
+    )
 
     # Save a plot of the minimum cost for different values of alpha:
     plot_alpha_cost()
