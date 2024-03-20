@@ -52,7 +52,7 @@ def _find_shortest_path_parallel(args):
 
     # Generate starting point. Fixed to zeros for results reproducibility.
     # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
-    x0 = np.zeros(ansatz.num_parameters)
+    x0 = np.ones(ansatz.num_parameters)
     # todo: check maxiter parameter to avoid maximum number of function evaluations exceeded (default = 1000)
     res = minimize(
         cost_func,
