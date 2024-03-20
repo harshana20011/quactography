@@ -2,6 +2,9 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Agg")
 
 
 def plot_alpha_cost():

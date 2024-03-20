@@ -1,6 +1,9 @@
 import rustworkx as rx
 import matplotlib.pyplot as plt
 from rustworkx.visualization import mpl_draw as draw
+import matplotlib
+
+matplotlib.use("Agg")
 
 
 def visualize_num_nodes(df, mat_adj):

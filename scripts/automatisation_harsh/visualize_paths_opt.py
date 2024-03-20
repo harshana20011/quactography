@@ -2,8 +2,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import rustworkx as rx
-
+import matplotlib
 from rustworkx.visualization import mpl_draw
+
+matplotlib.use("Agg")
 
 
 def visualize(
