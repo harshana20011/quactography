@@ -29,7 +29,7 @@ def _find_shortest_path_parallel(args):
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
     # Eigendecomposition of the Hamiltonian matrix with optimal solution:
-    get_exact_sol(h)
+    eigenvectors, path_hamiltonian = get_exact_sol(h)
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps)
@@ -82,6 +82,39 @@ def _find_shortest_path_parallel(args):
     bin_str.reverse()
     bin_str = np.array(bin_str)
 
+    # Check if optimal path in a subset of most probable paths:
+    sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get)  # type: ignore
+    number_of_possibilities = len(sorted_list_of_mostprobable_paths)
+    percentage = 0.2
+    number_selected_paths = int(percentage * number_of_possibilities)
+    selected_paths = []
+    for i in range(number_selected_paths):
+        selected_paths.append(sorted_list_of_mostprobable_paths[i])
+    print(f"Selected paths among {percentage*100} % of solutions: {selected_paths}")
+
+    for i in range(len(path_hamiltonian)):
+        path_hamiltonian[i] = path_hamiltonian[i][::-1]
+    print(
+        f"Optimal path obtained by diagonal hamiltonian minimum costs: {path_hamiltonian}"
+    )
+    # for i in selected_paths:
+    #     for j in path_hamiltonian:
+    #         if i == j:
+    #             print("The optimal solution is in the subset")
+
+    #         else:
+    #             break
+    # print("The solution is not in given subset")
+    match_found = False
+    for i in selected_paths:
+        if i in path_hamiltonian:
+            match_found = True
+            break
+    if match_found:
+        print("The optimal solution is in the subset of solutions found by QAOA.")
+    else:
+        print("The solution is not in given subset of solutions found by QAOA.")
+
     # Concatenate the binary path to a string:
     str_path = ["".join(map(str, bin_str))]  # type: ignore
     str_path = str_path[0]  # type: ignore
@@ -93,4 +126,4 @@ def _find_shortest_path_parallel(args):
     # ry_probabilities().get))  # type: ignore
     print("Finished with alpha : ", alpha)
 
-    return res, min_cost, alpha_min_cost
+    return res, min_cost, alpha_min_cost, selected_paths

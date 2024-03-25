@@ -22,7 +22,7 @@ def visualize_num_nodes(df, mat_adj):
     for i in range(num_nodes_cross_graph):
         for j in range(num_nodes_cross_graph):
             if mat_adj[i, j] != 0:
-                edges.append((i, j, mat_adj[i, j]))
+                edges.append((i, j, ((mat_adj[i, j])).round(3)))
 
     # print(edges)
     graph_cross.add_edges_from(edges)

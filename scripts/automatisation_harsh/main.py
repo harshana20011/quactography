@@ -38,11 +38,11 @@ def main():
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
-    # Second method: generate a random adjacency matrix
-    # and save it to a csv file in automatisation_harsh/matrices
-    # First choose the number of nodes you wish to have in the graph:
-    # num_nodes = 6
-    # probability_of_edge = 0.4
+    # # Second method: generate a random adjacency matrix
+    # # and save it to a csv file in automatisation_harsh/matrices
+    # # First choose the number of nodes you wish to have in the graph:
+    # num_nodes = 8
+    # probability_of_edge = 0.2
     # random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
     #     num_nodes, probability=probability_of_edge
     # )
@@ -55,7 +55,7 @@ def main():
     # adj_matrix_from_csv = pd.read_csv(
     #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
     # )
-    # When using existing csv file for random matrix, convert to numpy array:
+    # # When using existing csv file for random matrix, convert to numpy array:
     # mat_adj = np.array(adj_matrix_from_csv)
 
     # # Third method: visualize a graph from a npz file
@@ -122,18 +122,18 @@ def main():
     alphas = [
         # 0.0,
         # 0.50 * all_weights_sum,
-        # 1.00 * all_weights_sum,
+        1.00 * all_weights_sum,
         # 3.0 * all_weights_sum,
         # 3.1 * all_weights_sum,
         # 3.2 * all_weights_sum,
         # 3.32 * all_weights_sum,
         # 3.39 * all_weights_sum,
-        3.3 * all_weights_sum,
-        3.45 * all_weights_sum,
-        3.6 * all_weights_sum,
-        3.7 * all_weights_sum,
-        4.0 * all_weights_sum,
-        3.85 * all_weights_sum,
+        # 3.3 * all_weights_sum,
+        # 0.1 * all_weights_sum,
+        # 3.6 * all_weights_sum,
+        # 3.7 * all_weights_sum,
+        # 4.0 * all_weights_sum,
+        # 3.85 * all_weights_sum,
         # 4.0 * all_weights_sum,
         # 4.1 * all_weights_sum,
         # 4.5 * all_weights_sum,
@@ -172,6 +172,7 @@ def main():
         print("Alpha : ", alpha, " ({})".format(i))
         print(results[i][0])
         print(f"Minimum cost: {results[i][1]}")
+
         print()
 
         alpha_min_costs.append(results[i][2])
