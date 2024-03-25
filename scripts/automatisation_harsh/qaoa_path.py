@@ -90,6 +90,7 @@ def _find_shortest_path_parallel(args):
     selected_paths = []
     for i in range(number_selected_paths):
         selected_paths.append(sorted_list_of_mostprobable_paths[i])
+    print("_______________________________________________________________________\n")
     print(f"Selected paths among {percentage*100} % of solutions: {selected_paths}")
 
     for i in range(len(path_hamiltonian)):
@@ -111,9 +112,13 @@ def _find_shortest_path_parallel(args):
             match_found = True
             break
     if match_found:
-        print("The optimal solution is in the subset of solutions found by QAOA.")
+        print(
+            "The optimal solution is in the subset of solutions found by QAOA.\n_______________________________________________________________________"
+        )
     else:
-        print("The solution is not in given subset of solutions found by QAOA.")
+        print(
+            "The solution is not in given subset of solutions found by QAOA.\n_______________________________________________________________________"
+        )
 
     # Concatenate the binary path to a string:
     str_path = ["".join(map(str, bin_str))]  # type: ignore
