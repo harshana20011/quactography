@@ -11,6 +11,7 @@ def get_exact_sol(hamiltonian):
     print("Eigenvectors : ", eigenvectors[best_indices])
 
     binary_paths = [bin(idx[0]).lstrip("-0b") for idx in best_indices]
-    print("Binary paths : ", binary_paths)
+    # print("Binary paths : ", binary_paths)
+
     # costs and paths to all best solutions
     return eigenvalues[best_indices], binary_paths

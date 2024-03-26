@@ -29,7 +29,11 @@ def _find_shortest_path_parallel(args):
     h = -hc1 + alpha * ((hdep1**2) + (hfin1**2) + hint1)
 
     # Eigendecomposition of the Hamiltonian matrix with optimal solution:
-    eigenvectors, path_hamiltonian = get_exact_sol(h)
+    _, path_hamiltonian = get_exact_sol(h)
+    # Pad with zeros to the left to have the same length as the number of edges:
+    for i in range(len(path_hamiltonian)):
+        path_hamiltonian[i] = path_hamiltonian[i].zfill(len(hdep1) + 1)
+    print("Path Hamiltonian : ", path_hamiltonian)
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps)
@@ -83,9 +87,11 @@ def _find_shortest_path_parallel(args):
     bin_str = np.array(bin_str)
 
     # Check if optimal path in a subset of most probable paths:
+    # to-do: prendre en compte lorsqu'on a des zéros issus de la solution trouvée par get_exact_solution.py
+
     sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get, reverse=True)  # type: ignore
     number_of_possibilities = len(sorted_list_of_mostprobable_paths)
-    percentage = 0.15
+    percentage = 0.3
     number_selected_paths = int(percentage * number_of_possibilities)
     selected_paths = []
     for i in range(number_selected_paths):

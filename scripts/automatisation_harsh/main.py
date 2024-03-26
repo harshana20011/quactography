@@ -32,31 +32,31 @@ def main():
     - saves the minimum cost for different values of alpha to a file
     - plots the minimum cost for different values of alpha
     """
-    # # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
-    # adj_matrix_from_csv = pd.read_csv(
-    #     r"scripts\automatisation_harsh\matrices\mat_adj.csv"
-    # )
-    # mat_adj = np.array(adj_matrix_from_csv)
-
-    # Second method: generate a random adjacency matrix
-    # and save it to a csv file in automatisation_harsh/matrices
-    # First choose the number of nodes you wish to have in the graph:
-    num_nodes = 8
-    probability_of_edge = 0.2
-    random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
-        num_nodes, probability=probability_of_edge
-    )
-    mat_adj = np.array(random_adj_matrix)
-    save_adjacency_matrix_to_csv(
-        random_adj_matrix,
-        filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
-    )
-    # Read matrix from csv file and convert to numpy array:
+    # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
         r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
     )
-    # When using existing csv file for random matrix, convert to numpy array:
     mat_adj = np.array(adj_matrix_from_csv)
+
+    # # Second method: generate a random adjacency matrix
+    # # and save it to a csv file in automatisation_harsh/matrices
+    # # First choose the number of nodes you wish to have in the graph:
+    # num_nodes = 4
+    # probability_of_edge = 0.6
+    # random_adj_matrix = generate_random_adjacency_matrix_from_zeros(
+    #     num_nodes, probability=probability_of_edge
+    # )
+    # mat_adj = np.array(random_adj_matrix)
+    # save_adjacency_matrix_to_csv(
+    #     random_adj_matrix,
+    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
+    # )
+    # # Read matrix from csv file and convert to numpy array:
+    # adj_matrix_from_csv = pd.read_csv(
+    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
+    # )
+    # # When using existing csv file for random matrix, convert to numpy array:
+    # mat_adj = np.array(adj_matrix_from_csv)
 
     # # Third method: visualize a graph from a npz file
     # # Open and read data from npz file: (fibercup data output from build_graph.py)
@@ -137,7 +137,7 @@ def main():
         # 4.0 * all_weights_sum,
         # 4.1 * all_weights_sum,
         # 4.5 * all_weights_sum,
-        5.0 * all_weights_sum,
+        # 5.0 * all_weights_sum,
         # 4.2 * all_weights_sum,
         # 20 * all_weights_sum,
         # 1.50 * all_weights_sum,
