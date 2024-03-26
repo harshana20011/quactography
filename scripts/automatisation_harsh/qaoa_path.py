@@ -83,9 +83,9 @@ def _find_shortest_path_parallel(args):
     bin_str = np.array(bin_str)
 
     # Check if optimal path in a subset of most probable paths:
-    sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get)  # type: ignore
+    sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get, reverse=True)  # type: ignore
     number_of_possibilities = len(sorted_list_of_mostprobable_paths)
-    percentage = 0.2
+    percentage = 0.15
     number_selected_paths = int(percentage * number_of_possibilities)
     selected_paths = []
     for i in range(number_selected_paths):
@@ -98,14 +98,7 @@ def _find_shortest_path_parallel(args):
     print(
         f"Optimal path obtained by diagonal hamiltonian minimum costs: {path_hamiltonian}"
     )
-    # for i in selected_paths:
-    #     for j in path_hamiltonian:
-    #         if i == j:
-    #             print("The optimal solution is in the subset")
 
-    #         else:
-    #             break
-    # print("The solution is not in given subset")
     match_found = False
     for i in selected_paths:
         if i in path_hamiltonian:
