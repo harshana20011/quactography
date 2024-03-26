@@ -1,4 +1,6 @@
 import numpy as np
+from qiskit import QuantumCircuit
+from qiskit.primitives import Estimator, Sampler
 
 
 def get_exact_sol(hamiltonian):
@@ -15,3 +17,20 @@ def get_exact_sol(hamiltonian):
 
     # costs and paths to all best solutions
     return eigenvalues[best_indices], binary_paths
+
+
+def check_hamiltonian_terms(hamiltonian_term, binary_paths):
+    estimator = Estimator(options={"shots": 1000000, "seed": 42})
+    circuit = QuantumCircuit(4)
+    for i in range(len(binary_paths)):
+        for j in range(len(binary_paths[i])):
+            if binary_paths[i][j] == "1":
+                circuit.x(j)
+
+        print(
+            circuit,
+            "\n Cost for path ",
+            binary_paths[i],
+            " : ",
+            estimator.run(circuit, hamiltonian_term).result().values[0],
+        )

@@ -1,9 +1,14 @@
 from qiskit.primitives import Estimator, Sampler
 from qiskit.circuit.library import QAOAAnsatz
+from qiskit.visualization import plot_distribution
+import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import numpy as np
+import matplotlib
 
+matplotlib.use("Agg")
 from get_exact_solution import get_exact_sol
+from get_exact_solution import check_hamiltonian_terms
 
 
 # Function to find the shortest path in a graph using QAOA algorithm with parallel processing:
@@ -37,7 +42,7 @@ def _find_shortest_path_parallel(args):
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps)
-
+    check_hamiltonian_terms(h, ["1111"])
     # print(ansatz.decompose(reps=1).draw())
 
     # Run on local estimator and sampler. Fix seeds for results reproducibility.
@@ -78,24 +83,39 @@ def _find_shortest_path_parallel(args):
     circ = ansatz.copy()
     circ.measure_all()
     dist = sampler.run(circ, res.x).result().quasi_dists[0]
-
-    # plot_distribution(dist.binary_probabilities(), figsize=(7, 5))
+    # Plot distribution of probabilities:
+    plot_distribution(
+        dist.binary_probabilities(),
+        figsize=(10, 8),
+        title="Distribution of probabilities",
+        color="pink",
+    )
+    # Save plot:
+    plt.savefig(f"output/distribution_alpha_{alpha:.2f}.png")
 
     # print(max(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
     bin_str = list(map(int, max(dist.binary_probabilities(), key=dist.binary_probabilities().get)))  # type: ignore
     bin_str.reverse()
-    bin_str = np.array(bin_str)
+    bin_str = np.array(bin_str)  # type: ignore
 
     # Check if optimal path in a subset of most probable paths:
-    # to-do: prendre en compte lorsqu'on a des zéros issus de la solution trouvée par get_exact_solution.py
-
     sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get, reverse=True)  # type: ignore
-    number_of_possibilities = len(sorted_list_of_mostprobable_paths)
-    percentage = 0.3
-    number_selected_paths = int(percentage * number_of_possibilities)
+
+    # Dictionary keys and values where key = binary path, value = probability:
+    # Find maximal probability in all values of the dictionary:
+    max_probability = max(dist.binary_probabilities().values())
     selected_paths = []
-    for i in range(number_selected_paths):
-        selected_paths.append(sorted_list_of_mostprobable_paths[i])
+    for path, probability in dist.binary_probabilities().items():
+
+        probability = probability / max_probability
+        dist.binary_probabilities()[path] = probability
+        print(f"Path: {path} with ratio proba/max_proba : {probability}")
+
+        percentage = 0.5
+        # Select paths with probability higher than percentage of the maximal probability:
+        if probability > percentage:
+            selected_paths.append(path)
+
     print("_______________________________________________________________________\n")
     print(f"Selected paths among {percentage*100} % of solutions: {selected_paths}")
 
