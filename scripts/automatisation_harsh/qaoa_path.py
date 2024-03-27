@@ -39,7 +39,7 @@ def _find_shortest_path_parallel(args):
     # Pad with zeros to the left to have the same length as the number of edges:
     for i in range(len(path_hamiltonian)):
         path_hamiltonian[i] = path_hamiltonian[i].zfill(len(hdep1) + 1)
-    print("Path Hamiltonian : ", path_hamiltonian)
+    print("Path Hamiltonian (quantum reading -> right=q0) : ", path_hamiltonian)
 
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps, name="QAOA")
@@ -49,7 +49,7 @@ def _find_shortest_path_parallel(args):
     plt.savefig("output/qaoa_circuit.png")
 
     # Check if the Hamiltonian terms are correct with custom circuit:
-    check_hamiltonian_terms(hamiltonian_term=h, binary_paths=["0111"])
+    check_hamiltonian_terms(hamiltonian_term=h, binary_paths_classical_read=["0111"])
 
     # Run on local estimator and sampler. Fix seeds for results reproducibility.
     estimator = Estimator(options={"shots": 1000000, "seed": 42})
@@ -100,8 +100,8 @@ def _find_shortest_path_parallel(args):
 
     # print(max(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
     bin_str = list(map(int, max(dist.binary_probabilities(), key=dist.binary_probabilities().get)))  # type: ignore
-    bin_str.reverse()
-    bin_str = np.array(bin_str)  # type: ignore
+    bin_str_reversed = bin_str[::-1]
+    bin_str_reversed = np.array(bin_str_reversed)  # type: ignore
 
     # Check if optimal path in a subset of most probable paths:
     sorted_list_of_mostprobable_paths = sorted(dist.binary_probabilities(), key=dist.binary_probabilities().get, reverse=True)  # type: ignore
@@ -114,7 +114,9 @@ def _find_shortest_path_parallel(args):
 
         probability = probability / max_probability
         dist.binary_probabilities()[path] = probability
-        print(f"Path: {path} with ratio proba/max_proba : {probability}")
+        print(
+            f"Path (quantum read -> right=q0): {path} with ratio proba/max_proba : {probability}"
+        )
 
         percentage = 0.5
         # Select paths with probability higher than percentage of the maximal probability:
@@ -122,10 +124,12 @@ def _find_shortest_path_parallel(args):
             selected_paths.append(path)
 
     print("_______________________________________________________________________\n")
-    print(f"Selected paths among {percentage*100} % of solutions: {selected_paths}")
+    print(
+        f"Selected paths among {percentage*100} % of solutions (right=q0): {selected_paths}"
+    )
 
     print(
-        f"Optimal path obtained by diagonal hamiltonian minimum costs: {path_hamiltonian}"
+        f"Optimal path obtained by diagonal hamiltonian minimum costs (right=q0): {path_hamiltonian}"
     )
 
     match_found = False
@@ -143,11 +147,11 @@ def _find_shortest_path_parallel(args):
         )
 
     # Concatenate the binary path to a string:
-    str_path = ["".join(map(str, bin_str))]  # type: ignore
-    str_path = str_path[0]  # type: ignore
+    str_path_reversed = ["".join(map(str, bin_str_reversed))]  # type: ignore
+    str_path_reversed = str_path_reversed[0]  # type: ignore
 
     # Save parameters alpha and min_cost with path in csv file:
-    alpha_min_cost = [alpha, min_cost, str_path]
+    alpha_min_cost = [alpha, min_cost, str_path_reversed]
 
     # print(sorted(dist.binary_probabilities(), key=dist.bina
     # ry_probabilities().get))  # type: ignore

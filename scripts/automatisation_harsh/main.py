@@ -124,10 +124,10 @@ def main():
         # 0.50 * all_weights_sum,
         # 1.00 * all_weights_sum,
         # 3.0 * all_weights_sum,
-        # 3.1 * all_weights_sum,
-        # 3.2 * all_weights_sum,
-        # 3.32 * all_weights_sum,
-        # 3.39 * all_weights_sum,
+        3.1 * all_weights_sum,
+        3.2 * all_weights_sum,
+        3.32 * all_weights_sum,
+        3.39 * all_weights_sum,
         # 3.3 * all_weights_sum,
         # 0.1 * all_weights_sum,
         3.6 * all_weights_sum,
@@ -193,7 +193,7 @@ def main():
     # Save the minimum cost for different values of alpha to a file with the corresponding binary path in txt file:
     alpha_min_costs = np.array(alpha_min_costs, dtype="str")
     np.savetxt(
-        r"output\alpha_min_cost_not_reversed_yet.txt",
+        r"output\alpha_min_cost_classical_read_leftq0.txt",
         alpha_min_costs,
         delimiter=",",
         fmt="%s",

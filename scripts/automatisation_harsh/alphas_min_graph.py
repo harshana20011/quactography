@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 
 def plot_alpha_cost():
     df = pd.read_csv(
-        r"output\alpha_min_cost_not_reversed_yet.txt",
+        r"output\alpha_min_cost_classical_read_leftq0.txt",
         header=None,
         names=["alpha", "cost", "path"],
     )

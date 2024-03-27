@@ -19,18 +19,18 @@ def get_exact_sol(hamiltonian):
     return eigenvalues[best_indices], binary_paths
 
 
-def check_hamiltonian_terms(hamiltonian_term, binary_paths):
+def check_hamiltonian_terms(hamiltonian_term, binary_paths_classical_read):
     estimator = Estimator(options={"shots": 1000000, "seed": 42})
     circuit = QuantumCircuit(4)
-    for i in range(len(binary_paths)):
-        for j in range(len(binary_paths[i])):
-            if binary_paths[i][j] == "1":
+    for i in range(len(binary_paths_classical_read)):
+        for j in range(len(binary_paths_classical_read[i])):
+            if binary_paths_classical_read[i][j] == "1":
                 circuit.x(j)
 
         print(
             circuit,
-            "\n Cost for path ",
-            binary_paths[i],
+            "\n Cost for path (classical read -> left=q0)",
+            binary_paths_classical_read[i],
             " : ",
             estimator.run(circuit, hamiltonian_term).result().values[0],
         )
