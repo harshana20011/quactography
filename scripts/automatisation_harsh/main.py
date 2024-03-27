@@ -34,7 +34,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj_test.csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj2.csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 

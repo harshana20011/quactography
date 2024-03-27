@@ -21,7 +21,7 @@ def get_exact_sol(hamiltonian):
 
 def check_hamiltonian_terms(hamiltonian_term, binary_paths_classical_read):
     estimator = Estimator(options={"shots": 1000000, "seed": 42})
-    circuit = QuantumCircuit(4)
+    circuit = QuantumCircuit(len(binary_paths_classical_read[0]))
     for i in range(len(binary_paths_classical_read)):
         for j in range(len(binary_paths_classical_read[i])):
             if binary_paths_classical_read[i][j] == "1":

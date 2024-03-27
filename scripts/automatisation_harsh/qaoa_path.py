@@ -40,7 +40,8 @@ def _find_shortest_path_parallel(args):
     for i in range(len(path_hamiltonian)):
         path_hamiltonian[i] = path_hamiltonian[i].zfill(len(hdep1) + 1)
     print("Path Hamiltonian (quantum reading -> right=q0) : ", path_hamiltonian)
-
+    # Reverse the binary path to have the same orientation as the classical path:
+    path_hamiltonian_classical_read = [path[::-1] for path in path_hamiltonian]
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps, name="QAOA")
 
@@ -49,7 +50,9 @@ def _find_shortest_path_parallel(args):
     plt.savefig("output/qaoa_circuit.png")
 
     # Check if the Hamiltonian terms are correct with custom circuit:
-    check_hamiltonian_terms(hamiltonian_term=h, binary_paths_classical_read=["0111"])
+    check_hamiltonian_terms(
+        hamiltonian_term=h, binary_paths_classical_read=path_hamiltonian_classical_read
+    )
 
     # Run on local estimator and sampler. Fix seeds for results reproducibility.
     estimator = Estimator(options={"shots": 1000000, "seed": 42})
