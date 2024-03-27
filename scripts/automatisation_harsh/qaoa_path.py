@@ -1,6 +1,7 @@
 from qiskit.primitives import Estimator, Sampler
 from qiskit.circuit.library import QAOAAnsatz
 from qiskit.visualization import plot_distribution
+from qiskit.visualization import plot_circuit_layout
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import numpy as np
@@ -41,9 +42,14 @@ def _find_shortest_path_parallel(args):
     print("Path Hamiltonian : ", path_hamiltonian)
 
     # Create QAOA circuit.
-    ansatz = QAOAAnsatz(h, reps)
-    check_hamiltonian_terms(h, ["1111"])
-    # print(ansatz.decompose(reps=1).draw())
+    ansatz = QAOAAnsatz(h, reps, name="QAOA")
+
+    # Plot the circuit layout:
+    ansatz.decompose(reps=3).draw(output="mpl", style="iqp")
+    plt.savefig("output/qaoa_circuit.png")
+
+    # Check if the Hamiltonian terms are correct with custom circuit:
+    check_hamiltonian_terms(hamiltonian_term=h, binary_paths=["0111"])
 
     # Run on local estimator and sampler. Fix seeds for results reproducibility.
     estimator = Estimator(options={"shots": 1000000, "seed": 42})
@@ -61,7 +67,7 @@ def _find_shortest_path_parallel(args):
 
     # Generate starting point. Fixed to zeros for results reproducibility.
     # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
-    x0 = np.ones(ansatz.num_parameters)
+    x0 = np.zeros(ansatz.num_parameters)
     # todo: check maxiter parameter to avoid maximum number of function evaluations exceeded (default = 1000)
     res = minimize(
         cost_func,
@@ -76,7 +82,6 @@ def _find_shortest_path_parallel(args):
     # print(res)
 
     min_cost = cost_func(res.x, estimator, ansatz, h)
-
     # print(f"Minimum cost: {min_cost}")
 
     # Get probability distribution associated with optimized parameters.
@@ -119,8 +124,6 @@ def _find_shortest_path_parallel(args):
     print("_______________________________________________________________________\n")
     print(f"Selected paths among {percentage*100} % of solutions: {selected_paths}")
 
-    for i in range(len(path_hamiltonian)):
-        path_hamiltonian[i] = path_hamiltonian[i][::-1]
     print(
         f"Optimal path obtained by diagonal hamiltonian minimum costs: {path_hamiltonian}"
     )
