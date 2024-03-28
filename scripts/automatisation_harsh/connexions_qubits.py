@@ -72,6 +72,7 @@ def connexions_edges(mat_adj, num_nodes):
     weights.append(weight_qubit)
     # weights[0][0]
     all_weights_sum = sum(np.tril(mat_adj).flatten())
+    max_weight = max(np.tril(mat_adj).flatten())
     return (
         number_of_edges,
         weights,
@@ -79,4 +80,5 @@ def connexions_edges(mat_adj, num_nodes):
         ending_nodes,
         q_indices,
         all_weights_sum,
+        max_weight,
     )

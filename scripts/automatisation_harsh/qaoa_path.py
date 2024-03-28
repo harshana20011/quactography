@@ -117,18 +117,32 @@ def _find_shortest_path_parallel(args):
 
         probability = probability / max_probability
         dist.binary_probabilities()[path] = probability
-        print(
-            f"Path (quantum read -> right=q0): {path} with ratio proba/max_proba : {probability}"
-        )
+        # print(
+        #     f"Path (quantum read -> right=q0): {path} with ratio proba/max_proba : {probability}"
+        # )
 
         percentage = 0.5
         # Select paths with probability higher than percentage of the maximal probability:
         if probability > percentage:
-            selected_paths.append(path)
+            selected_paths.extend([path, probability])
+    # Sort the selected paths by probability from most probable to least probable:
+
+    selected_paths = sorted(
+        selected_paths[::2], key=lambda x: dist.binary_probabilities()[x], reverse=True
+    )
+    # Plot distribution with selected paths only:
+    plot_distribution(
+        {key: dist.binary_probabilities()[key] for key in selected_paths},
+        figsize=(16, 14),
+        title="Distribution of probabilities for selected paths",
+        color="pink",
+    )
+    # Save plot:
+    plt.savefig(f"output/distribution_selected_paths_alpha_{alpha:.2f}.png")
 
     print("_______________________________________________________________________\n")
     print(
-        f"Selected paths among {percentage*100} % of solutions (right=q0): {selected_paths}"
+        f"Selected paths among {percentage*100} % of solutions (right=q0) from most probable to least probable: {selected_paths}"
     )
 
     print(

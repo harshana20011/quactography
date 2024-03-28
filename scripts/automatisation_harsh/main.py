@@ -34,7 +34,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj2.csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj.csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
@@ -78,6 +78,7 @@ def main():
         ending_nodes,
         q_indices,
         all_weights_sum,
+        max_weight,
     ) = connexions_edges(mat_adj, num_nodes)
 
     # Calculation the cost of the first term in the Hamiltonian
@@ -121,16 +122,16 @@ def main():
     # that amplifies the cost of breaking constraints in the Hamiltonian:
     alphas = [
         # 0.0,
-        # 0.50 * all_weights_sum,
-        # 1.00 * all_weights_sum,
+        # 0.50 * max_weight,
+        # 1.00 * max_weight,
         # 3.0 * all_weights_sum,
-        3.1 * all_weights_sum,
-        3.2 * all_weights_sum,
-        3.32 * all_weights_sum,
-        3.39 * all_weights_sum,
+        3 * all_weights_sum,
+        # 3.2 * max_weight,
+        # 3.32 * max_weight,
+        # 3.39 * max_weight,
         # 3.3 * all_weights_sum,
         # 0.1 * all_weights_sum,
-        3.6 * all_weights_sum,
+        # 3.6 * max_weight,
         # 3.7 * all_weights_sum,
         # 4.0 * all_weights_sum,
         # 3.85 * all_weights_sum,
@@ -149,7 +150,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 1
+    reps = 2
     pool = multiprocessing.Pool(nbr_processes)
 
     results = pool.map(
