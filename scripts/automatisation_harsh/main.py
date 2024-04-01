@@ -20,6 +20,9 @@ from visualize_paths_opt import visualize
 from qaoa_path import _find_shortest_path_parallel
 
 
+# todo: add args to main: start node/end node, nb reps, adj matrix file or random generation (edges + nodes params), alpha values (list), verbose (bool), parallel (bool)
+# todo: add argparse to main
+# todo: Output: paths, costs, alpha values, plot graph general, plot optimal path, hist of all paths and hist of 50% best paths,
 def main():
     """This script is the main entry point for the automatisation of the QAOA algorithm:
     It...
@@ -34,7 +37,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj.csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj_test.csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
@@ -150,7 +153,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 2
+    reps = 5
     pool = multiprocessing.Pool(nbr_processes)
 
     results = pool.map(

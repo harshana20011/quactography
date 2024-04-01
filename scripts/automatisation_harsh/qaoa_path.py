@@ -1,11 +1,13 @@
 from qiskit.primitives import Estimator, Sampler
 from qiskit.circuit.library import QAOAAnsatz
 from qiskit.visualization import plot_distribution
-from qiskit.visualization import plot_circuit_layout
+from qiskit.visualization import plot_histogram
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import numpy as np
 import matplotlib
+import seaborn as sns
+import pandas as pd
 
 matplotlib.use("Agg")
 from get_exact_solution import get_exact_sol
@@ -36,18 +38,21 @@ def _find_shortest_path_parallel(args):
 
     # Eigendecomposition of the Hamiltonian matrix with optimal solution:
     _, path_hamiltonian = get_exact_sol(h)
+
     # Pad with zeros to the left to have the same length as the number of edges:
     for i in range(len(path_hamiltonian)):
         path_hamiltonian[i] = path_hamiltonian[i].zfill(len(hdep1) + 1)
     print("Path Hamiltonian (quantum reading -> right=q0) : ", path_hamiltonian)
+
     # Reverse the binary path to have the same orientation as the classical path:
     path_hamiltonian_classical_read = [path[::-1] for path in path_hamiltonian]
+
     # Create QAOA circuit.
     ansatz = QAOAAnsatz(h, reps, name="QAOA")
 
     # Plot the circuit layout:
     ansatz.decompose(reps=3).draw(output="mpl", style="iqp")
-    plt.savefig("output/qaoa_circuit.png")
+    # plt.savefig("output/qaoa_circuit.png")
 
     # Check if the Hamiltonian terms are correct with custom circuit:
     check_hamiltonian_terms(
@@ -98,8 +103,8 @@ def _find_shortest_path_parallel(args):
         title="Distribution of probabilities",
         color="pink",
     )
-    # Save plot:
-    plt.savefig(f"output/distribution_alpha_{alpha:.2f}.png")
+    # Save plot of distribution:
+    # plt.savefig(f"output/distribution_alpha_{alpha:.2f}.png")
 
     # print(max(dist.binary_probabilities(), key=dist.binary_probabilities().get))  # type: ignore
     bin_str = list(map(int, max(dist.binary_probabilities(), key=dist.binary_probabilities().get)))  # type: ignore
@@ -131,14 +136,18 @@ def _find_shortest_path_parallel(args):
         selected_paths[::2], key=lambda x: dist.binary_probabilities()[x], reverse=True
     )
     # Plot distribution with selected paths only:
-    plot_distribution(
-        {key: dist.binary_probabilities()[key] for key in selected_paths},
-        figsize=(16, 14),
-        title="Distribution of probabilities for selected paths",
-        color="pink",
-    )
-    # Save plot:
-    plt.savefig(f"output/distribution_selected_paths_alpha_{alpha:.2f}.png")
+    # if a selected path is equal to the optimal path, put it in color:
+    # Get probabilities for selected paths
+
+    # plot_distribution(
+    #     {key: dist.binary_probabilities()[key] for key in selected_paths},
+    #     figsize=(16, 14),
+    #     title=f"Distribution of probabilities for selected paths \n Right path (quantum read): {path_hamiltonian}",
+    #     color="pink" if path_hamiltonian in selected_paths[:] else "lightblue",
+    #     sort="value_desc",
+    #     filename=f"output/distribution_alpha_{alpha:.2f}.png",
+    #     target_string=path_hamiltonian,
+    # )
 
     print("_______________________________________________________________________\n")
     print(
@@ -154,10 +163,25 @@ def _find_shortest_path_parallel(args):
         if i in path_hamiltonian:
             match_found = True
             break
+
+    plot_distribution(
+        {key: dist.binary_probabilities()[key] for key in selected_paths},
+        figsize=(16, 14),
+        title=(
+            f"Distribution of probabilities for selected paths \n Right path FOUND (quantum read): {path_hamiltonian}"
+            if match_found
+            else f"Distribution of probabilities for selected paths \n Right path NOT FOUND (quantum read): {path_hamiltonian}"
+        ),
+        color="pink" if match_found else "lightblue",
+        sort="value_desc",
+        filename=f"output/distribution_alpha_{alpha:.2f}.png",
+        target_string=path_hamiltonian,
+    )
     if match_found:
         print(
             "The optimal solution is in the subset of solutions found by QAOA.\n_______________________________________________________________________"
         )
+
     else:
         print(
             "The solution is not in given subset of solutions found by QAOA.\n_______________________________________________________________________"
