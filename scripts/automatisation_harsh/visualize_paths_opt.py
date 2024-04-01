@@ -83,7 +83,7 @@ def visualize(
     # plt.tight_layout()
     plt.legend(
         [
-            f"alpha = {(alpha/all_weights_sum):.2f},\n Cost: {min_cost:.2f}\n Starting node : {starting_node}, \n Ending node : {ending_node},\n reps : {reps}"
+            f"alpha_factor = {(alpha/all_weights_sum):.2f},\n Cost: {min_cost:.2f}\n Starting node : {starting_node}, \n Ending node : {ending_node},\n reps : {reps}"
         ],
         loc="upper right",
     )
