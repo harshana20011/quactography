@@ -152,7 +152,7 @@ def main():
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
     reps = 1
-    pool = multiprocessing.Pool(nbr_processes)
+    pool = multiprocessing.Pool(1)
 
     results = pool.map(
         _find_shortest_path_parallel,
