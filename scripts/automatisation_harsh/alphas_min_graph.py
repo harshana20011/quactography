@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 
 def plot_alpha_cost():
     df = pd.read_csv(
-        r"output\alpha_min_cost_classical_read_leftq0.txt",
+        r"C:\Users\harsh\quactography\output\alpha_min_cost_classical_read_leftq0.txt",
         header=None,
         names=["alpha", "cost", "path"],
     )
@@ -20,6 +20,6 @@ def plot_alpha_cost():
     plt.xlabel("Alpha")
     plt.ylabel("Cost")
     plt.title("Cost in function of alpha")
-    plt.savefig("output/alpha_min_cost.png")
+    plt.savefig(r"C:\Users\harsh\quactography\output\alpha_min_cost.png")
 
     # plt.show()

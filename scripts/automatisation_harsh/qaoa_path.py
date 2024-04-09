@@ -8,10 +8,28 @@ import numpy as np
 import matplotlib
 import seaborn as sns
 import pandas as pd
+from tqdm import tqdm
 
 matplotlib.use("Agg")
 from get_exact_solution import get_exact_sol
 from get_exact_solution import check_hamiltonian_terms
+
+# todo: see why the progress bar appears more than once in terminal at the end of process (maybe due to multiprocessing)
+# Counter to keep track of iterations
+iteration_counter = 0
+# todo: add maxiter param at choice of user
+progress = tqdm(
+    total=5000,
+    desc="Optimizing (PERCENTAGE OF ITERATIONS NEEDED TO OPTMIZE ON MAXITER)",
+    leave=True,
+)
+
+
+# Callback function to update the progress bar
+def callback(x):
+    global iteration_counter
+    iteration_counter += 1
+    progress.update(1)  # Update progress bar by one iteration
 
 
 # Function to find the shortest path in a graph using QAOA algorithm with parallel processing:
@@ -73,23 +91,40 @@ def _find_shortest_path_parallel(args):
         )
         return cost
 
-    # Generate starting point. Fixed to zeros for results reproducibility.
-    # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
     x0 = np.zeros(ansatz.num_parameters)
-    # todo: check maxiter parameter to avoid maximum number of function evaluations exceeded (default = 1000)
+    # Minimize the cost function using COBYLA method
     res = minimize(
         cost_func,
         x0,
         args=(estimator, ansatz, h),
         method="COBYLA",
-        options={"maxiter": 5000, "disp": True},
-        # tol=0.1 * min_weights,
+        callback=callback,
+        options={"maxiter": 5000, "disp": False},
         tol=1e-4,
     )
 
-    # print(res)
+    # Close the progress bar once optimization is done
+    progress.close()
 
     min_cost = cost_func(res.x, estimator, ansatz, h)
+
+    # # Generate starting point. Fixed to zeros for results reproducibility.
+    # # x0 = 2 * np.pi * np.random.rand(ansatz.num_parameters)
+    # x0 = np.zeros(ansatz.num_parameters)
+    # # todo: check maxiter parameter to avoid maximum number of function evaluations exceeded (default = 1000)
+    # res = minimize(
+    #     cost_func,
+    #     x0,
+    #     args=(estimator, ansatz, h),
+    #     method="COBYLA",
+    #     options={"maxiter": 5000, "disp": True},
+    #     # tol=0.1 * min_weights,
+    #     tol=1e-4,
+    # )
+
+    # # print(res)
+
+    # min_cost = cost_func(res.x, estimator, ansatz, h)
     # print(f"Minimum cost: {min_cost}")
 
     # Get probability distribution associated with optimized parameters.
@@ -135,19 +170,6 @@ def _find_shortest_path_parallel(args):
     selected_paths = sorted(
         selected_paths[::2], key=lambda x: dist.binary_probabilities()[x], reverse=True
     )
-    # Plot distribution with selected paths only:
-    # if a selected path is equal to the optimal path, put it in color:
-    # Get probabilities for selected paths
-
-    # plot_distribution(
-    #     {key: dist.binary_probabilities()[key] for key in selected_paths},
-    #     figsize=(16, 14),
-    #     title=f"Distribution of probabilities for selected paths \n Right path (quantum read): {path_hamiltonian}",
-    #     color="pink" if path_hamiltonian in selected_paths[:] else "lightblue",
-    #     sort="value_desc",
-    #     filename=f"output/distribution_alpha_{alpha:.2f}.png",
-    #     target_string=path_hamiltonian,
-    # )
 
     print("_______________________________________________________________________\n")
     print(

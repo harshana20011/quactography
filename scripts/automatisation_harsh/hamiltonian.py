@@ -1,5 +1,7 @@
 from qiskit.quantum_info import SparsePauliOp
 
+# todo: class Hamiltonian: self.mandatory_cost_h(graph.nb_edges, graph.nb_weights), self.Hs, self.Ht, self.Hint, self.H, def get_cost, get_H_total with alphas
+
 
 def mandatory_cost(number_of_edges, weights, all_weights_sum):
     """Cost of going through a path

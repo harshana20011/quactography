@@ -29,6 +29,6 @@ def visualize_num_nodes(df, mat_adj):
 
     draw(graph_cross, with_labels=True, edge_labels=str)  # type: ignore
     # Save figure in output
-    plt.savefig("output/graph_dep.png")
+    plt.savefig(r"C:\Users\harsh\quactography\output\graph_dep.png")
     plt.close()
     return num_nodes_cross_graph

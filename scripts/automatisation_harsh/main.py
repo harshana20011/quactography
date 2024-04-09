@@ -37,7 +37,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj.csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj .csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
@@ -91,7 +91,7 @@ def main():
     )
 
     # Fix a starting node:
-    starting_node = 1
+    starting_node = 15
     # Calculates the cost of the second term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the starting node:
     starting_node_constraint_hamiltonian = starting_node_cost(
