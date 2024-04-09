@@ -46,15 +46,16 @@ def get_random_adj_matrix_with_probability(num_nodes: int, probability_of_edge: 
         num_nodes, probability=probability_of_edge
     )
     mat_adj = np.array(random_adj_matrix)
+    file_name = "matrices/random_adjacency_matrix.csv"
+
     save_adjacency_matrix_to_csv(
         random_adj_matrix,
-        filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
+        filename=file_name,
     )
-    adj_matrix_from_csv, mat_adj = get_adj_matrix(
-        r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
-    )
+
+    adj_matrix_from_csv, mat_adj = get_adj_matrix(file_name)
     return adj_matrix_from_csv, mat_adj
 
 
 # Test:
-# get_random_adj_matrix_given_nodes_edges(4, 10, True)
+# get_random_adj_matrix_given_nodes_edges(4, 1000, True)

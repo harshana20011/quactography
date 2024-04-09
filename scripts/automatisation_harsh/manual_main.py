@@ -36,9 +36,7 @@ def main():
     - plots the minimum cost for different values of alpha
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
-    adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj.csv"
-    )
+    adj_matrix_from_csv = pd.read_csv(r"matrices\mat_adj_test.csv")
     mat_adj = np.array(adj_matrix_from_csv)
 
     # # Second method: generate a random adjacency matrix
@@ -52,11 +50,11 @@ def main():
     # mat_adj = np.array(random_adj_matrix)
     # save_adjacency_matrix_to_csv(
     #     random_adj_matrix,
-    #     filename=r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv",
+    #     filename=r"matrices\random_adjacency_matrix_f_z.csv",
     # )
     # # Read matrix from csv file and convert to numpy array:
     # adj_matrix_from_csv = pd.read_csv(
-    #     r"scripts\automatisation_harsh\matrices\random_adjacency_matrix_f_z.csv"
+    #     r"matrices\random_adjacency_matrix_f_z.csv"
     # )
     # # When using existing csv file for random matrix, convert to numpy array:
     # mat_adj = np.array(adj_matrix_from_csv)
@@ -64,7 +62,7 @@ def main():
     # # Third method: visualize a graph from a npz file
     # # Open and read data from npz file: (fibercup data output from build_graph.py)
     # # todo: from build_graph.py, save npz file to matrices file in automatisation_harsh
-    # matrix_from_npz = load(r"scripts\automatisation_harsh\matrices\outgraph.npz")
+    # matrix_from_npz = load(r"matrices\outgraph.npz")
     # adjmat, node_indices, vol_dims = matrix_from_npz.files
     # print(adjmat, "\n", matrix_from_npz[adjmat])
     # print(node_indices, "\n", matrix_from_npz[node_indices])
@@ -91,7 +89,7 @@ def main():
     )
 
     # Fix a starting node:
-    starting_node = 15
+    starting_node = 1
     # Calculates the cost of the second term in the Hamiltonian
     # which when equal zero, makes sure there is only one edge connected to the starting node:
     starting_node_constraint_hamiltonian = starting_node_cost(

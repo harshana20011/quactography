@@ -88,7 +88,5 @@ def visualize(
         loc="upper right",
     )
     # plt.show()
-    plt.savefig(
-        f"C:/Users/harsh/quactography/output/Opt_path_alpha_{alpha:.2f}.png"
-    )  # Save the figure
+    plt.savefig(f"output/Opt_path_alpha_{alpha:.2f}.png")  # Save the figure
     plt.close()

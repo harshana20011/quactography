@@ -97,11 +97,10 @@ def generate_random_adj_matrix_given_nodes_edges(
     # Remove all-zero columns and rows
     mat = remove_zero_columns_rows(mat)
     # Save adjacency matrix to csv file
-    filename = r"scripts\automatisation_harsh\matrices\random_adjacency_matrix.csv"
-    save_adjacency_matrix_to_csv(
-        mat,
-        filename,
-    )
+    file_name = "matrices/random_adjacency_matrix.csv"
+
+    save_adjacency_matrix_to_csv(mat, filename=file_name)
+
     # # Visualize the graph test:
     # graph_cross = rx.PyGraph()
     # nodes_list = graph_cross.add_nodes_from(range(len(mat)))
@@ -118,7 +117,8 @@ def generate_random_adj_matrix_given_nodes_edges(
     # # Draw the graph
     # draw(graph_cross, with_labels=True, edge_labels=str)  # type: ignore
     # plt.show()
-    return filename
+    print(file_name)
+    return file_name
 
 
 def generate_random_adjacency_matrix(num_nodes, num_zeros_to_add, max_weight=0.5):
@@ -209,4 +209,4 @@ def save_adjacency_matrix_to_npz(adjacency_matrix, filename="adjacency_matrix.np
     np.savez(filename, adjacency_matrix=adjacency_matrix)
 
 
-# generate_random_adj_matrix_given_nodes_edges(4, 10, True)
+# generate_random_adj_matrix_given_nodes_edges(10, 100, False)

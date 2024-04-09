@@ -59,12 +59,13 @@ def main():
     if args.filename:
         adj_matrix_from_csv, mat_adj = get_adj_matrix(args.filename)
     else:
+        args.number_nodes_edges[2] = bool(args.number_nodes_edges[2])
         adj_matrix_from_csv, mat_adj = get_random_adj_matrix_given_nodes_edges(
             args.number_nodes_edges[0],
             args.number_nodes_edges[1],
             args.number_nodes_edges[2],
         )
-    Graph(adj_matrix_from_csv, mat_adj)
+    graph = Graph(adj_matrix_from_csv, mat_adj)
 
 
 if __name__ == "__main__":
