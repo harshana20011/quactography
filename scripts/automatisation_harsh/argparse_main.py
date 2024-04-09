@@ -1,5 +1,24 @@
 import argparse
 
+from get_adj_matrix import get_adj_matrix
+from get_adj_matrix import get_random_adj_matrix_given_nodes_edges
+from connexions_qubits import connexions_edges
+from visualisation_entry_graph import visualize_num_nodes
+
+
+class Graph:
+    def __init__(self, mat_adj, adj_matrix_from_csv):
+        self.num_nodes = visualize_num_nodes(adj_matrix_from_csv, mat_adj)
+        (
+            self.number_of_edges,
+            self.weights,
+            self.starting_nodes,
+            self.ending_nodes,
+            self.q_indices,
+            self.all_weights_sum,
+            self.max_weight,
+        ) = connexions_edges(mat_adj, self.num_nodes)
+
 
 def main():
 
@@ -17,10 +36,10 @@ def main():
     group.add_argument(
         "-n",
         "--number_nodes_edges",
-        help="number of nodes and edges",
+        help="number of nodes and edges and importance of edges (1 if edges matter, 0 otherwise)",
         type=int,
         nargs="+",
-        default=[4, 4],
+        default=[4, 4, 1],
     )
     parser.add_argument("-r", "--reps", type=int, required=True, help="")
     # Add a list:
@@ -37,6 +56,15 @@ def main():
         print("verbose")
     else:
         print("nothing")
+    if args.filename:
+        adj_matrix_from_csv, mat_adj = get_adj_matrix(args.filename)
+    else:
+        adj_matrix_from_csv, mat_adj = get_random_adj_matrix_given_nodes_edges(
+            args.number_nodes_edges[0],
+            args.number_nodes_edges[1],
+            args.number_nodes_edges[2],
+        )
+    Graph(adj_matrix_from_csv, mat_adj)
 
 
 if __name__ == "__main__":

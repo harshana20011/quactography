@@ -37,7 +37,7 @@ def main():
     """
     # First method: visualize a graph from a csv file, existing in matrices automatisation_harsh/folder:
     adj_matrix_from_csv = pd.read_csv(
-        r"scripts\automatisation_harsh\matrices\mat_adj .csv"
+        r"scripts\automatisation_harsh\matrices\mat_adj.csv"
     )
     mat_adj = np.array(adj_matrix_from_csv)
 
@@ -153,7 +153,7 @@ def main():
     nbr_processes = multiprocessing.cpu_count()
     # Number of repetitions for the QAOA algorithm (equal to number of
     # layers in the quantum circuit HC, HB with different parameters gamma and beta):
-    reps = 5
+    reps = 1
     pool = multiprocessing.Pool(nbr_processes)
 
     results = pool.map(
